@@ -99,7 +99,7 @@ func Open(
 		}
 	}
 
-	if _, err = store.env.ReaderCheck(); err != ErrSuccess {
+	if _, err = store.env.ReaderCheck(); err != nil && err != ErrSuccess {
 		_ = store.Close()
 		return nil, err
 	}
