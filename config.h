@@ -10,7 +10,9 @@
 /* #undef ENABLE_GCOV */
 /* #undef ENABLE_ASAN */
 /* #undef ENABLE_UBSAN */
+#ifndef MDBX_FORCE_ASSERTIONS
 #define MDBX_FORCE_ASSERTIONS 0
+#endif
 
 /* Common */
 #define MDBX_TXN_CHECKOWNER 0
@@ -26,7 +28,7 @@
 #ifndef MDBX_TRUST_RTC_AUTO
 #define MDBX_TRUST_RTC 0
 #endif
-#define MDBX_DISABLE_PAGECHECKS 0
+#define MDBX_DISABLE_PAGECHECKS 1
 
 /* Windows */
 #define MDBX_WITHOUT_MSVC_CRT 0

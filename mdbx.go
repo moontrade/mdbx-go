@@ -1,9 +1,8 @@
 package mdbx
 
 /*
-#cgo !windows CFLAGS: -O2 -g -DMDBX_BUILD_FLAGS='' -DMDBX_DEBUG=0 -DNDEBUG=1 -DMDBX_FORCE_ASSERTIONS=1 -std=gnu11 -fvisibility=hidden -ffast-math  -fPIC -pthread -Wno-error=attributes -W -Wall -Werror -Wextra -Wpedantic -Wno-deprecated-declarations -Wno-format -Wno-implicit-fallthrough -Wno-unused-parameter -Wno-format-extra-args -Wno-missing-field-initializers
-#cgo windows CFLAGS:  -O2 -g -DMDBX_BUILD_FLAGS='' -DMDBX_DEBUG=0 -DNDEBUG=1 -DMDBX_FORCE_ASSERTIONS=1 -std=gnu11 -fvisibility=hidden -ffast-math -fexceptions -fno-common -W -Wno-deprecated-declarations -Wno-bad-function-cast -Wno-cast-function-type -Wall -Wno-format -Wno-implicit-fallthrough -Wno-unused-parameter -Wno-format-extra-args -Wno-missing-field-initializers
-#cgo windows LDFLAGS: -lntdll
+//#cgo !windows CFLAGS: -O2 -g -DMDBX_BUILD_FLAGS='' -DMDBX_DEBUG=0 -DNDEBUG=1 -DMDBX_FORCE_ASSERTIONS=1 -std=gnu11 -fvisibility=hidden -ffast-math  -fPIC -pthread -Wno-error=attributes -W -Wall -Werror -Wextra -Wpedantic -Wno-deprecated-declarations -Wno-format -Wno-implicit-fallthrough -Wno-unused-parameter -Wno-format-extra-args -Wno-missing-field-initializers
+#cgo !windows CFLAGS: -O2 -g -DMDBX_BUILD_FLAGS='' -DMDBX_DEBUG=0 -DNDEBUG=1 -fPIC -ffast-math -std=gnu11 -fvisibility=hidden -pthread
 #cgo linux LDFLAGS: -lrt
 
 #include <stdlib.h>
