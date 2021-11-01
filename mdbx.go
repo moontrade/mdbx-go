@@ -1,6 +1,11 @@
 package mdbx
 
 /*
+#cgo !windows CFLAGS: -O2 -g -DMDBX_BUILD_FLAGS='' -DMDBX_DEBUG=0 -DNDEBUG=1 -DMDBX_FORCE_ASSERTIONS=1 -std=gnu11 -fvisibility=hidden -ffast-math  -fPIC -pthread -Wno-error=attributes -W -Wall -Werror -Wextra -Wpedantic -Wno-deprecated-declarations -Wno-format -Wno-implicit-fallthrough -Wno-unused-parameter -Wno-format-extra-args -Wno-missing-field-initializers
+#cgo windows CFLAGS:  -O2 -g -DMDBX_BUILD_FLAGS='' -DMDBX_DEBUG=0 -DNDEBUG=1 -DMDBX_FORCE_ASSERTIONS=1 -std=gnu11 -fvisibility=hidden -ffast-math -fexceptions -fno-common -W -Wno-deprecated-declarations -Wno-bad-function-cast -Wno-cast-function-type -Wall -Wno-format -Wno-implicit-fallthrough -Wno-unused-parameter -Wno-format-extra-args -Wno-missing-field-initializers
+#cgo windows LDFLAGS: -lntdll
+#cgo linux LDFLAGS: -lrt
+
 #include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
@@ -1310,39 +1315,39 @@ const (
 	EnvUtterlyNoSync = EnvFlags(C.MDBX_UTTERLY_NOSYNC)
 )
 
-type TxnFlags uint32
+type TxFlags uint32
 
 const (
 	// TxReadWrite Start read-write transaction.
 	//
 	// Only one write transaction may be active at a time. Writes are fully
 	// serialized, which guarantees that writers can never deadlock.
-	TxReadWrite = TxnFlags(C.MDBX_TXN_READWRITE)
+	TxReadWrite = TxFlags(C.MDBX_TXN_READWRITE)
 
 	// TxReadOnly Start read-only transaction.
 	//
 	// There can be multiple read-only transactions simultaneously that do not
 	// block each other and a write transactions.
-	TxReadOnly = TxnFlags(C.MDBX_TXN_RDONLY)
+	TxReadOnly = TxFlags(C.MDBX_TXN_RDONLY)
 
-	// TxnReadOnlyPrepare Prepare but not start read-only transaction.
+	// TxReadOnlyPrepare Prepare but not start read-only transaction.
 	//
 	// Transaction will not be started immediately, but created transaction handle
 	// will be ready for use with \ref mdbx_txn_renew(). This flag allows to
 	// preallocate memory and assign a reader slot, thus avoiding these operations
 	// at the next start of the transaction.
-	TxnReadOnlyPrepare = TxnFlags(C.MDBX_TXN_RDONLY_PREPARE)
+	TxReadOnlyPrepare = TxFlags(C.MDBX_TXN_RDONLY_PREPARE)
 
-	// TxnTry Do not block when starting a write transaction.
-	TxnTry = TxnFlags(C.MDBX_TXN_TRY)
+	// TxTry Do not block when starting a write transaction.
+	TxTry = TxFlags(C.MDBX_TXN_TRY)
 
-	// TxnNoMetaSync Exactly the same as \ref MDBX_NOMETASYNC,
+	// TxNoMetaSync Exactly the same as \ref MDBX_NOMETASYNC,
 	// but for this transaction only
-	TxnNoMetaSync = TxnFlags(C.MDBX_TXN_NOMETASYNC)
+	TxNoMetaSync = TxFlags(C.MDBX_TXN_NOMETASYNC)
 
-	// TxnNoSync Exactly the same as \ref MDBX_SAFE_NOSYNC,
+	// TxNoSync Exactly the same as \ref MDBX_SAFE_NOSYNC,
 	// but for this transaction only
-	TxnNoSync = TxnFlags(C.MDBX_TXN_NOSYNC)
+	TxNoSync = TxFlags(C.MDBX_TXN_NOSYNC)
 )
 
 type DBFlags uint32
@@ -1780,6 +1785,95 @@ func NewEnv() (*Env, Error) {
 		return nil, err
 	}
 	return env, err
+}
+
+// FD returns the open file descriptor (or Windows file handle) for the given
+// environment.  An error is returned if the environment has not been
+// successfully Opened (where C API just retruns an invalid handle).
+//
+// See mdbx_env_get_fd.
+func (env *Env) FD() (uintptr, error) {
+	// fdInvalid is the value -1 as a uintptr, which is used by MDBX in the
+	// case that env has not been opened yet.  the strange construction is done
+	// to avoid constant value overflow errors at compile time.
+	const fdInvalid = ^uintptr(0)
+
+	var mf C.mdbx_filehandle_t
+	err := Error(C.mdbx_env_get_fd(env.env, &mf))
+	//err := operrno("mdbx_env_get_fd", ret)
+	if err != ErrSuccess {
+		return 0, err
+	}
+	fd := uintptr(mf)
+
+	if fd == fdInvalid {
+		return 0, os.ErrClosed
+	}
+	return fd, nil
+}
+
+// ReaderList dumps the contents of the reader lock table as text.  Readers
+// start on the second line as space-delimited fields described by the first
+// line.
+//
+// See mdbx_reader_list.
+//func (env *Env) ReaderList(fn func(string) error) error {
+//	ctx, done := newMsgFunc(fn)
+//	defer done()
+//	if fn == nil {
+//		ctx = 0
+//	}
+//
+//	ret := C.mdbxgo_reader_list(env._env, C.size_t(ctx))
+//	if ret >= 0 {
+//		return nil
+//	}
+//	if ret < 0 && ctx != 0 {
+//		err := ctx.get().err
+//		if err != nil {
+//			return err
+//		}
+//	}
+//	return operrno("mdbx_reader_list", ret)
+//}
+
+// ReaderCheck clears stale entries from the reader lock table and returns the
+// number of entries cleared.
+//
+// See mdbx_reader_check()
+func (env *Env) ReaderCheck() (int, error) {
+	var dead C.int
+	err := Error(C.mdbx_reader_check(env.env, &dead))
+	if err != ErrSuccess {
+		return int(dead), err
+	}
+	return int(dead), nil
+}
+
+// Path returns the path argument passed to Open.  Path returns a non-nil error
+// if env.Open() was not previously called.
+//
+// See mdbx_env_get_path.
+func (env *Env) Path() (string, error) {
+	var cpath *C.char
+	err := Error(C.mdbx_env_get_path(env.env, &cpath))
+	if err != ErrSuccess {
+		return "", err
+	}
+	if cpath == nil {
+		return "", os.ErrNotExist
+	}
+	return C.GoString(cpath), nil
+}
+
+// MaxKeySize returns the maximum allowed length for a key.
+//
+// See mdbx_env_get_maxkeysize.
+func (env *Env) MaxKeySize() int {
+	if env == nil {
+		return int(C.mdbx_env_get_maxkeysize_ex(nil, 0))
+	}
+	return int(C.mdbx_env_get_maxkeysize_ex(env.env, 0))
 }
 
 // Close the environment and release the memory map.
@@ -2932,7 +3026,7 @@ func (tx *Tx) IsCommitted() bool {
 	return tx.committed
 }
 
-func (env *Env) Begin(txn *Tx, flags TxnFlags) Error {
+func (env *Env) Begin(txn *Tx, flags TxFlags) Error {
 	txn.env = env
 	txn.txn = nil
 	txn.reset = false
@@ -2943,7 +3037,7 @@ func (env *Env) Begin(txn *Tx, flags TxnFlags) Error {
 		parent  uintptr
 		txn     uintptr
 		context uintptr
-		flags   TxnFlags
+		flags   TxFlags
 		result  Error
 	}{
 		env:    uintptr(unsafe.Pointer(env.env)),

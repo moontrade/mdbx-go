@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -16,18 +17,25 @@ const (
 var (
 	storeMu sync.Mutex
 	stores  = make(map[*Store]struct{})
+	syncer  = make(chan struct {
+		s     *Store
+		delay time.Duration
+	}, 10)
 )
 
 type Store struct {
-	id      int
-	env     *Env
-	closed  int64
-	writeMu sync.Mutex
-	mu      sync.Mutex
-}
-
-func (s *Store) Env() *Env {
-	return s.env
+	env              *Env
+	path             string
+	recovery         string
+	recoveryDuration time.Duration
+	closed           int64
+	updates          uint64
+	synced           uint64
+	syncQueued       uint64
+	syncPeriod       time.Duration
+	writeMu          sync.Mutex
+	syncMu           sync.Mutex
+	mu               sync.Mutex
 }
 
 func Open(
@@ -37,7 +45,9 @@ func Open(
 	initEnv func(env *Env, create bool) error,
 	init func(store *Store, create bool) error,
 ) (*Store, error) {
-	store := &Store{}
+	store := &Store{
+		path: filepath.Join(path, DataFileName),
+	}
 
 	env, e := NewEnv()
 	if e != ErrSuccess {
@@ -47,7 +57,7 @@ func Open(
 
 	var err error
 	var stat os.FileInfo
-	stat, err = os.Stat(filepath.Join(path, DataFileName))
+	stat, err = os.Stat(store.path)
 	var create bool
 	if err != nil {
 		create = true
@@ -69,6 +79,27 @@ func Open(
 	}
 
 	if err = store.env.Open(path, flags, mode); err != ErrSuccess {
+		if err == ErrWannaRecovery {
+			start := time.Now()
+			_, output, err := Chk("-v", "-w", store.path)
+			if err != ErrSuccess {
+				_ = store.Close()
+				return nil, err
+			}
+			store.recovery = string(output)
+			store.recoveryDuration = time.Now().Sub(start)
+
+			if err = store.env.Open(path, flags, mode); err != ErrSuccess {
+				_ = store.Close()
+				return nil, err
+			}
+		} else {
+			_ = store.Close()
+			return nil, err
+		}
+	}
+
+	if _, err = store.env.ReaderCheck(); err != ErrSuccess {
 		_ = store.Close()
 		return nil, err
 	}
@@ -81,12 +112,22 @@ func Open(
 	}
 
 	if flags&EnvSafeNoSync != 0 || flags&EnvNoMetaSync != 0 {
+		//syncBytes, _ := env.GetSyncBytes()
+		syncPeriod, _ := env.GetSyncPeriod()
 
+		if syncPeriod > 0 {
+
+		}
 	}
+
 	storeMu.Lock()
 	stores[store] = struct{}{}
 	storeMu.Unlock()
 	return store, nil
+}
+
+func (s *Store) Env() *Env {
+	return s.env
 }
 
 func (s *Store) IsClosed() bool {
@@ -106,7 +147,7 @@ func (s *Store) Close() error {
 	}
 	s.closed = time.Now().UnixNano()
 	if s.env != nil {
-		_ = s.env.Close(true)
+		_ = s.env.Close(false)
 		s.env = nil
 	}
 	storeMu.Lock()
@@ -164,7 +205,8 @@ func (s *Store) UpdateLock(lockThread bool, fn func(tx *Tx) error) (err error) {
 				return err
 			}
 		}
-		return err
+		atomic.AddUint64(&s.updates, 1)
+		return nil
 	}
 }
 
@@ -210,4 +252,21 @@ func (s *Store) ViewRenew(tx *Tx, fn func(tx *Tx)) (err error) {
 	}
 	fn(tx)
 	return err
+}
+
+func (s *Store) Sync() error {
+	update := atomic.LoadUint64(&s.updates)
+	if err := s.env.Sync(true, false); err != ErrSuccess {
+		return err
+	}
+	atomic.StoreUint64(&s.synced, update)
+	return nil
+}
+
+func (s *Store) Chk() (result int32, output []byte, err error) {
+	return Chk("-v", s.path)
+}
+
+func (s *Store) ChkRecover() (result int32, output []byte, err error) {
+	return Chk("-v", "-w", s.path)
 }
