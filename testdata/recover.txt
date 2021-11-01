@@ -1,0 +1,40 @@
+Running for testdata/74649157/mdbx.dat in 'read-only' mode...
+ ! opening after an unclean shutdown, but boot-id(8da3135b4158d020-091db14ccae94c8f) is MATCH: rollback NOT needed, steady-sync NEEDED, but unable in read-only mode
+ ! mdbx_env_open() failed, error -30419 MDBX_WANNA_RECOVERY: Database should be recovered, but this could NOT be done automatically for now since it opened in read-only mode
+Please run mdbx_chk in the read-write mode (with '-w' option).
+
+
+Running for testdata/74649157/mdbx.dat in 'read-write' mode...
+ ~ opening after an unclean shutdown, but boot-id(8da3135b4158d020-091db14ccae94c8f) is MATCH: rollback NOT needed, steady-sync NEEDED
+ - monopolistic mode
+ - current boot-id 8da3135b4158d020-091db14ccae94c8f
+ - pagesize 16384 (4096 system), max keysize 8124..8166, max readers 116
+ - mapsize 17179869184 (16.00 Gb)
+ - dynamic datafile: 16777216 (16.00 Mb) .. 17179869184 (16.00 Gb), +16777216 (16.00 Mb), -0 (0.00 Kb)
+ - current datafile: 1811939328 (1.69 Gb), 110592 pages
+ - meta-0: steady txn#78, stay
+ - meta-1: steady txn#77, tail
+ - meta-2: weak-intact (same boot-id) txn#79, head
+ ! steady meta-0 txn-id mismatch recent-txn-id (78 != 79)
+ - transactions: recent 79, latter reader 79, lag 0
+Traversal b-tree by txn#79...
+ - found 'm' area
+ - pages: walked 109744, left/unused 10
+ - summary: average fill 95.7%, 0 problems
+Processing '@MAIN'...
+ - key-value kind: usual-key => single-value
+ - last modification txn#79
+ - summary: 1 records, 0 dups, 1 key's bytes, 48 data's bytes, 0 problems
+Processing '@GC'...
+ - key-value kind: ordinal-key => single-value
+ - last modification txn#79
+ - fixed key-size 8
+ - summary: 2 records, 0 dups, 16 key's bytes, 48 data's bytes, 0 problems
+ - space: 1048576 total pages, backed 110592 (10.5%), allocated 109754 (10.5%), available 938827 (89.5%)
+Processing 'm'...
+ - key-value kind: ordinal-key => single-value
+ - last modification txn#79
+ - fixed key-size 8
+ - summary: 74649157 records, 0 dups, 597193256 key's bytes, 373245785 data's bytes, 0 problems
+Perform sync-to-disk for make steady checkpoint at txn-id #79
+No error is detected, elapsed 2.272 seconds
