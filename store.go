@@ -46,7 +46,7 @@ func Open(
 	init func(store *Store, create bool) error,
 ) (*Store, error) {
 	store := &Store{
-		path: filepath.Join(path, DataFileName),
+		path: path,
 	}
 
 	env, e := NewEnv()
@@ -57,7 +57,7 @@ func Open(
 
 	var err error
 	var stat os.FileInfo
-	stat, err = os.Stat(store.path)
+	stat, err = os.Stat(filepath.Join(path, DataFileName))
 	var create bool
 	if err != nil {
 		create = true
@@ -262,9 +262,9 @@ func (s *Store) Sync() error {
 }
 
 func (s *Store) Chk() (result int32, output []byte, err error) {
-	return Chk("-v", s.path)
+	return Chk("-v", filepath.Join(s.path, DataFileName))
 }
 
 func (s *Store) ChkRecover() (result int32, output []byte, err error) {
-	return Chk("-v", "-w", s.path)
+	return Chk("-v", "-w", filepath.Join(s.path, DataFileName))
 }
