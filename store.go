@@ -210,7 +210,7 @@ func (s *Store) UpdateLock(lockThread bool, fn func(tx *Tx) error) (err error) {
 	}
 }
 
-func (s *Store) View(fn func(tx *Tx)) (err error) {
+func (s *Store) View(fn func(tx *Tx) error) (err error) {
 	tx := Tx{}
 	defer func() {
 		if !tx.IsAborted() {
@@ -227,11 +227,10 @@ func (s *Store) View(fn func(tx *Tx)) (err error) {
 	if err = s.env.Begin(&tx, TxReadOnly); err != ErrSuccess {
 		return err
 	}
-	fn(&tx)
-	return err
+	return fn(&tx)
 }
 
-func (s *Store) ViewRenew(tx *Tx, fn func(tx *Tx)) (err error) {
+func (s *Store) ViewRenew(tx *Tx, fn func(tx *Tx) error) (err error) {
 	if tx == nil {
 		return s.View(fn)
 	}
@@ -250,8 +249,7 @@ func (s *Store) ViewRenew(tx *Tx, fn func(tx *Tx)) (err error) {
 	if err = tx.Renew(); err != ErrSuccess {
 		return err
 	}
-	fn(tx)
-	return err
+	return fn(tx)
 }
 
 func (s *Store) Sync() error {
