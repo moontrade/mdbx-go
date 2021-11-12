@@ -10,7 +10,11 @@ import (
 )
 
 func TestChk(t *testing.T) {
-	Chk("-v", "-w", "testdata/1000000/mdbx.dat")
+	_, out, err := Chk("-v", "-w", "testdata/1000000/mdbx.dat")
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(string(out))
 }
 
 func TestEnv_Open(t *testing.T) {
@@ -54,8 +58,8 @@ func TestEnv_Open(t *testing.T) {
 	binary.BigEndian.PutUint64(key, uint64(101))
 	value := []byte("hello")
 
-	keyVal := BytesVal(&key)
-	valueVal := BytesVal(&value)
+	keyVal := Bytes(&key)
+	valueVal := Bytes(&value)
 
 	if err = txn.Put(dbi, &keyVal, &valueVal, 0); err != ErrSuccess {
 		t.Fatal(err)
@@ -152,8 +156,8 @@ func BenchmarkTxn_Put(b *testing.B) {
 	key := make([]byte, 8)
 	data := []byte("hello")
 
-	keyVal := BytesVal(&key)
-	dataVal := BytesVal(&data)
+	keyVal := Bytes(&key)
+	dataVal := Bytes(&data)
 
 	b.ResetTimer()
 	b.ReportAllocs()
@@ -202,7 +206,7 @@ func BenchmarkTxn_PutCursor(b *testing.B) {
 	data := []byte("hello")
 
 	keyVal := U64(&key)
-	dataVal := BytesVal(&data)
+	dataVal := Bytes(&data)
 
 	{
 		insert := func(low, high uint64) {
@@ -255,7 +259,7 @@ func BenchmarkTxn_Get(b *testing.B) {
 	data := []byte("hello")
 
 	keyVal := U64(&key)
-	dataVal := BytesVal(&data)
+	dataVal := Bytes(&data)
 
 	{
 		insert := func(low, high uint64) {
@@ -406,8 +410,8 @@ func TestTxn_Cursor(b *testing.T) {
 	key := make([]byte, 8)
 	data := []byte("hello")
 
-	keyVal := BytesVal(&key)
-	dataVal := BytesVal(&data)
+	keyVal := Bytes(&key)
+	dataVal := Bytes(&data)
 
 	txn, err := engine.BeginWrite()
 	if err != ErrSuccess {
@@ -464,7 +468,7 @@ func TestTxn_Cursor(b *testing.T) {
 		//	break
 		//}
 		count++
-		keyInt := keyVal.UInt64()
+		keyInt := keyVal.U64()
 		println("key", keyInt)
 		_ = keyInt
 

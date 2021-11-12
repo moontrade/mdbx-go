@@ -2858,7 +2858,34 @@ type DBI uint32
 
 type Val syscall.Iovec
 
-func (v *Val) Unsafe() []byte {
+func (v *Val) String() string {
+	b := make([]byte, v.Len)
+	copy(b, *(*[]byte)(unsafe.Pointer(&reflect.SliceHeader{
+		Data: uintptr(unsafe.Pointer(v.Base)),
+		Len:  int(v.Len),
+		Cap:  int(v.Len),
+	})))
+	return string(b)
+}
+
+func (v *Val) UnsafeString() string {
+	return *(*string)(unsafe.Pointer(&reflect.StringHeader{
+		Data: uintptr(unsafe.Pointer(v.Base)),
+		Len:  int(v.Len),
+	}))
+}
+
+func (v *Val) Bytes() []byte {
+	b := make([]byte, v.Len)
+	copy(b, *(*[]byte)(unsafe.Pointer(&reflect.SliceHeader{
+		Data: uintptr(unsafe.Pointer(v.Base)),
+		Len:  int(v.Len),
+		Cap:  int(v.Len),
+	})))
+	return b
+}
+
+func (v *Val) UnsafeBytes() []byte {
 	return *(*[]byte)(unsafe.Pointer(&reflect.SliceHeader{
 		Data: uintptr(unsafe.Pointer(v.Base)),
 		Len:  int(v.Len),
@@ -2866,24 +2893,20 @@ func (v *Val) Unsafe() []byte {
 	}))
 }
 
-func (v *Val) Copy() []byte {
-	return v.CopyTo(nil)
-}
-
-func (v *Val) CopyTo(b []byte) []byte {
+func (v *Val) Copy(dst []byte) []byte {
 	src := *(*[]byte)(unsafe.Pointer(&reflect.SliceHeader{
 		Data: uintptr(unsafe.Pointer(v.Base)),
 		Len:  int(v.Len),
 		Cap:  int(v.Len),
 	}))
-	if cap(b) >= int(v.Len) {
-		b = b[0:v.Len]
-		copy(b, src)
-		return b
+	if cap(dst) >= int(v.Len) {
+		dst = dst[0:v.Len]
+		copy(dst, src)
+		return dst
 	}
-	b = make([]byte, v.Len)
-	copy(b, src)
-	return b
+	dst = make([]byte, v.Len)
+	copy(dst, src)
+	return dst
 }
 
 func U8(v *uint8) Val {
@@ -2956,14 +2979,14 @@ func F64(v *float64) Val {
 	}
 }
 
-func BytesVal(b *[]byte) Val {
+func Bytes(b *[]byte) Val {
 	return Val{
 		Base: &(*b)[0],
 		Len:  uint64(len(*b)),
 	}
 }
 
-func StringVal(s *string) Val {
+func String(s *string) Val {
 	h := *(*reflect.StringHeader)(unsafe.Pointer(s))
 	return Val{
 		Base: (*byte)(unsafe.Pointer(h.Data)),
@@ -2971,7 +2994,7 @@ func StringVal(s *string) Val {
 	}
 }
 
-func StringConstVal(s string) Val {
+func StringConst(s string) Val {
 	h := *(*reflect.StringHeader)(unsafe.Pointer(&s))
 	return Val{
 		Base: (*byte)(unsafe.Pointer(h.Data)),
@@ -2979,18 +3002,74 @@ func StringConstVal(s string) Val {
 	}
 }
 
-func (v *Val) UInt64() uint64 {
+func (v *Val) I8() int8 {
+	if v.Len < 1 {
+		return 0
+	}
+	return *(*int8)(unsafe.Pointer(v.Base))
+}
+
+func (v *Val) U8() uint8 {
+	if v.Len < 1 {
+		return 0
+	}
+	return *v.Base
+}
+
+func (v *Val) I16() int16 {
+	if v.Len < 2 {
+		return 0
+	}
+	return *(*int16)(unsafe.Pointer(v.Base))
+}
+
+func (v *Val) U16() uint16 {
+	if v.Len < 2 {
+		return 0
+	}
+	return *(*uint16)(unsafe.Pointer(v.Base))
+}
+
+func (v *Val) I32() int32 {
+	if v.Len < 4 {
+		return 0
+	}
+	return *(*int32)(unsafe.Pointer(v.Base))
+}
+
+func (v *Val) U32() uint32 {
+	if v.Len < 4 {
+		return 0
+	}
+	return *(*uint32)(unsafe.Pointer(v.Base))
+}
+
+func (v *Val) I64() int64 {
+	if v.Len < 8 {
+		return 0
+	}
+	return *(*int64)(unsafe.Pointer(v.Base))
+}
+
+func (v *Val) U64() uint64 {
 	if v.Len < 8 {
 		return 0
 	}
 	return *(*uint64)(unsafe.Pointer(v.Base))
 }
 
-func (v *Val) String() string {
-	return *(*string)(unsafe.Pointer(&reflect.StringHeader{
-		Data: uintptr(unsafe.Pointer(v.Base)),
-		Len:  int(v.Len),
-	}))
+func (v *Val) F32() float32 {
+	if v.Len < 4 {
+		return 0
+	}
+	return *(*float32)(unsafe.Pointer(v.Base))
+}
+
+func (v *Val) F64() float64 {
+	if v.Len < 8 {
+		return 0
+	}
+	return *(*float64)(unsafe.Pointer(v.Base))
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
