@@ -11,6 +11,140 @@ package mdbx
 #include "mdbx.h"
 #include "mdbx_utils.h"
 
+#ifndef likely
+#   if (defined(__GNUC__) || __has_builtin(__builtin_expect)) && !defined(__COVERITY__)
+#       define likely(cond) __builtin_expect(!!(cond), 1)
+#   else
+#       define likely(x) (!!(x))
+#   endif
+#endif
+
+#ifndef unlikely
+#   if (defined(__GNUC__) || __has_builtin(__builtin_expect)) && !defined(__COVERITY__)
+#       define unlikely(cond) __builtin_expect(!!(cond), 0)
+#   else
+#       define unlikely(x) (!!(x))
+#   endif
+#endif
+
+static int cmp_lexical(const MDBX_val *a, const MDBX_val *b) {
+  if (a->iov_len == b->iov_len)
+    return a->iov_len ? memcmp(a->iov_base, b->iov_base, a->iov_len) : 0;
+
+  const int diff_len = (a->iov_len < b->iov_len) ? -1 : 1;
+  const size_t shortest = (a->iov_len < b->iov_len) ? a->iov_len : b->iov_len;
+  int diff_data = shortest ? memcmp(a->iov_base, b->iov_base, shortest) : 0;
+  return likely(diff_data) ? diff_data : diff_len;
+}
+
+int cmp_u16_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
+  if (unlikely(a->iov_len < 2 || b->iov_len < 2)) {
+    return cmp_lexical(a, b);
+  }
+  uint16_t aa = *((uint16_t*)a->iov_base);
+  uint16_t bb = *((uint16_t*)a->iov_base);
+  if (aa < bb) {
+	return -1;
+  }
+  if (aa > bb) {
+    return 1;
+  }
+  if (a->iov_len == b->iov_len)
+    return a->iov_len ? memcmp(a->iov_base+2, b->iov_base+2, a->iov_len-2) : 0;
+
+  const int diff_len = (a->iov_len < b->iov_len) ? -1 : 1;
+  const size_t shortest = (a->iov_len < b->iov_len) ? a->iov_len : b->iov_len;
+  int diff_data = shortest ? memcmp(a->iov_base+2, b->iov_base+2, shortest-2) : 0;
+  return likely(diff_data) ? diff_data : diff_len;
+}
+
+int cmp_u16_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
+  if (unlikely(a->iov_len < 10 || b->iov_len < 10)) {
+    return cmp_lexical(a, b);
+  }
+  uint16_t aa = *((uint16_t*)a->iov_base);
+  uint16_t bb = *((uint16_t*)a->iov_base);
+  if (aa < bb) return -1;
+  if (aa > bb) return 1;
+  uint64_t aa2 = *((uint64_t*)a->iov_base+2);
+  uint64_t bb2 = *((uint64_t*)b->iov_base+2);
+  if (aa2 < bb2) return -1;
+  if (aa2 > bb2) return 1;
+  return 0;
+}
+
+int cmp_u32_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
+  if (unlikely(a->iov_len < 4 || b->iov_len < 4)) {
+    return cmp_lexical(a, b);
+  }
+  uint32_t aa = *((uint32_t*)a->iov_base);
+  uint32_t bb = *((uint32_t*)a->iov_base);
+  if (aa < bb) {
+	return -1;
+  }
+  if (aa > bb) {
+    return 1;
+  }
+  if (a->iov_len == b->iov_len)
+    return a->iov_len ? memcmp(a->iov_base+4, b->iov_base+4, a->iov_len-4) : 0;
+
+  const int diff_len = (a->iov_len < b->iov_len) ? -1 : 1;
+  const size_t shortest = (a->iov_len < b->iov_len) ? a->iov_len : b->iov_len;
+  int diff_data = shortest ? memcmp(a->iov_base+4, b->iov_base+4, shortest-4) : 0;
+  return likely(diff_data) ? diff_data : diff_len;
+}
+
+int cmp_u32_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
+  if (unlikely(a->iov_len < 12 || b->iov_len < 12)) {
+   return cmp_lexical(a, b);
+  }
+  uint32_t aa = *((uint32_t*)a->iov_base);
+  uint32_t bb = *((uint32_t*)a->iov_base);
+  if (aa < bb) return -1;
+  if (aa > bb) return 1;
+  uint64_t aa2 = *((uint64_t*)a->iov_base+4);
+  uint64_t bb2 = *((uint64_t*)b->iov_base+4);
+  if (aa2 < bb2) return -1;
+  if (aa2 > bb2) return 1;
+  return 0;
+}
+
+int cmp_u64_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
+  if (unlikely(a->iov_len < 8 || b->iov_len < 8)) {
+    return cmp_lexical(a, b);
+  }
+  uint64_t aa = *((uint64_t*)a->iov_base);
+  uint64_t bb = *((uint64_t*)a->iov_base);
+  if (aa < bb) {
+	return -1;
+  }
+  if (aa > bb) {
+    return 1;
+  }
+  if (a->iov_len == b->iov_len)
+    return a->iov_len ? memcmp(a->iov_base+8, b->iov_base+8, a->iov_len-8) : 0;
+
+  const int diff_len = (a->iov_len < b->iov_len) ? -1 : 1;
+  const size_t shortest = (a->iov_len < b->iov_len) ? a->iov_len : b->iov_len;
+  int diff_data = shortest ? memcmp(a->iov_base+8, b->iov_base+8, shortest-8) : 0;
+  return likely(diff_data) ? diff_data : diff_len;
+}
+
+int cmp_u64_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
+  if (unlikely(a->iov_len < 16 || b->iov_len < 16)) {
+   return cmp_lexical(a, b);
+  }
+  uint64_t aa = *((uint32_t*)a->iov_base);
+  uint64_t bb = *((uint32_t*)a->iov_base);
+  if (aa < bb) return -1;
+  if (aa > bb) return 1;
+  aa = *((uint64_t*)a->iov_base+8);
+  bb = *((uint64_t*)b->iov_base+8);
+  if (aa < bb) return -1;
+  if (aa > bb) return 1;
+  return 0;
+}
+
 typedef struct mdbx_strerror_t {
 	size_t result;
 	int32_t code;
@@ -603,6 +737,17 @@ func init() {
 		panic("sizeof(C.MDBX_envinfo) != sizeof(EnvInfo{})")
 	}
 }
+
+type Cmp C.MDBX_cmp_func
+
+var (
+	CmpU16PrefixLexical = (*Cmp)(C.cmp_u16_prefix_lexical)
+	CmpU16PrefixU64     = (*Cmp)(C.cmp_u16_prefix_u64)
+	CmpU32PrefixLexical = (*Cmp)(C.cmp_u32_prefix_lexical)
+	CmpU32PrefixU64     = (*Cmp)(C.cmp_u32_prefix_u64)
+	CmpU64PrefixLexical = (*Cmp)(C.cmp_u64_prefix_lexical)
+	CmpU64PrefixU64     = (*Cmp)(C.cmp_u64_prefix_u64)
+)
 
 // Chk invokes the embedded mdbx_chk utility
 // usage: mdbx_chk [-V] [-v] [-q] [-c] [-0|1|2] [-w] [-d] [-i] [-s subdb] dbpath
@@ -3671,6 +3816,37 @@ func (tx *Tx) OpenDBI(name string, flags DBFlags) (DBI, Error) {
 		defer C.free(unsafe.Pointer(n))
 		var dbi DBI
 		err := Error(C.mdbx_dbi_open(tx.txn, n, (C.MDBX_db_flags_t)(flags), (*C.MDBX_dbi)(unsafe.Pointer(&dbi))))
+		return dbi, err
+	}
+}
+
+// OpenDBIEx OpenDBI with custom comparators.
+// \ref avoid_custom_comparators "avoid using custom comparators" and use
+// \ref mdbx_dbi_open() instead.
+//
+// \ingroup c_dbi
+//
+// \param [in] txn    transaction handle returned by \ref mdbx_txn_begin().
+// \param [in] name   The name of the database to open. If only a single
+//                    database is needed in the environment,
+//                    this value may be NULL.
+// \param [in] flags  Special options for this database.
+// \param [in] keycmp  Optional custom key comparison function for a database.
+// \param [in] datacmp Optional custom data comparison function for a database.
+// \param [out] dbi    Address where the new MDBX_dbi handle will be stored.
+// \returns A non-zero error value on failure and 0 on success.
+func (tx *Tx) OpenDBIEx(name string, flags DBFlags, keyCompare, dataCompare *Cmp) (DBI, Error) {
+	if len(name) == 0 {
+		var dbi DBI
+		err := Error(C.mdbx_dbi_open_ex(tx.txn, nil, (C.MDBX_db_flags_t)(flags), (*C.MDBX_dbi)(unsafe.Pointer(&dbi)),
+			(*C.MDBX_cmp_func)(unsafe.Pointer(keyCompare)), (*C.MDBX_cmp_func)(unsafe.Pointer(dataCompare))))
+		return dbi, err
+	} else {
+		n := C.CString(name)
+		defer C.free(unsafe.Pointer(n))
+		var dbi DBI
+		err := Error(C.mdbx_dbi_open_ex(tx.txn, n, (C.MDBX_db_flags_t)(flags), (*C.MDBX_dbi)(unsafe.Pointer(&dbi)),
+			(*C.MDBX_cmp_func)(unsafe.Pointer(keyCompare)), (*C.MDBX_cmp_func)(unsafe.Pointer(dataCompare))))
 		return dbi, err
 	}
 }

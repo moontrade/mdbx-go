@@ -36,7 +36,7 @@ func TestEnv_Open(t *testing.T) {
 		t.Fatal(err)
 	}
 	err = env.Open(
-		"testdata/74419951",
+		"testdata/1",
 		EnvNoTLS|EnvNoReadAhead|EnvCoalesce|EnvLIFOReclaim|EnvSafeNoSync,
 		0664,
 	)
