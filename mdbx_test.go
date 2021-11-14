@@ -128,7 +128,10 @@ func initDB(path string) (*Engine, Error) {
 		return nil, err
 	}
 
-	if engine.rootDB, err = engine.write.OpenDBI("m", DBIntegerKey|DBCreate); err != ErrSuccess {
+	//if engine.rootDB, err = engine.write.OpenDBI("m", DBIntegerKey|DBCreate); err != ErrSuccess {
+	//	return nil, err
+	//}
+	if engine.rootDB, err = engine.write.OpenDBIEx("m", DBIntegerKey|DBCreate, CmpU64, nil); err != ErrSuccess {
 		return nil, err
 	}
 

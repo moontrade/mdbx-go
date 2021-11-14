@@ -37,7 +37,34 @@ static int cmp_lexical(const MDBX_val *a, const MDBX_val *b) {
   return likely(diff_data) ? diff_data : diff_len;
 }
 
-int cmp_u16_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
+int mdbx_cmp_u16(const MDBX_val *a, const MDBX_val *b) {
+  //if (unlikely(a->iov_len < 2 || b->iov_len < 2)) {
+  //  return cmp_lexical(a, b);
+  //}
+  uint16_t aa = *((uint16_t*)a->iov_base);
+  uint16_t bb = *((uint16_t*)b->iov_base);
+  return bb > aa ? -1 : aa > bb;
+}
+
+int mdbx_cmp_u32(const MDBX_val *a, const MDBX_val *b) {
+  //if (unlikely(a->iov_len < 4 || b->iov_len < 4)) {
+  //  return cmp_lexical(a, b);
+  //}
+  uint32_t aa = *((uint32_t*)a->iov_base);
+  uint32_t bb = *((uint32_t*)b->iov_base);
+  return bb > aa ? -1 : aa > bb;
+}
+
+int mdbx_cmp_u64(const MDBX_val *a, const MDBX_val *b) {
+  //if (unlikely(a->iov_len < 8 || b->iov_len < 8)) {
+  //  return cmp_lexical(a, b);
+  //}
+  uint64_t aa = *((uint64_t*)a->iov_base);
+  uint64_t bb = *((uint64_t*)b->iov_base);
+  return bb > aa ? -1 : aa > bb;
+}
+
+int mdbx_cmp_u16_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
   if (unlikely(a->iov_len < 2 || b->iov_len < 2)) {
     return cmp_lexical(a, b);
   }
@@ -58,7 +85,7 @@ int cmp_u16_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
   return likely(diff_data) ? diff_data : diff_len;
 }
 
-int cmp_u16_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
+int mdbx_cmp_u16_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
   if (unlikely(a->iov_len < 10 || b->iov_len < 10)) {
     return cmp_lexical(a, b);
   }
@@ -73,7 +100,7 @@ int cmp_u16_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
   return 0;
 }
 
-int cmp_u32_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
+int mdbx_cmp_u32_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
   if (unlikely(a->iov_len < 4 || b->iov_len < 4)) {
     return cmp_lexical(a, b);
   }
@@ -94,7 +121,7 @@ int cmp_u32_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
   return likely(diff_data) ? diff_data : diff_len;
 }
 
-int cmp_u32_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
+int mdbx_cmp_u32_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
   if (unlikely(a->iov_len < 12 || b->iov_len < 12)) {
    return cmp_lexical(a, b);
   }
@@ -109,7 +136,7 @@ int cmp_u32_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
   return 0;
 }
 
-int cmp_u64_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
+int mdbx_cmp_u64_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
   if (unlikely(a->iov_len < 8 || b->iov_len < 8)) {
     return cmp_lexical(a, b);
   }
@@ -130,7 +157,7 @@ int cmp_u64_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
   return likely(diff_data) ? diff_data : diff_len;
 }
 
-int cmp_u64_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
+int mdbx_cmp_u64_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
   if (unlikely(a->iov_len < 16 || b->iov_len < 16)) {
    return cmp_lexical(a, b);
   }
@@ -741,12 +768,15 @@ func init() {
 type Cmp C.MDBX_cmp_func
 
 var (
-	CmpU16PrefixLexical = (*Cmp)(C.cmp_u16_prefix_lexical)
-	CmpU16PrefixU64     = (*Cmp)(C.cmp_u16_prefix_u64)
-	CmpU32PrefixLexical = (*Cmp)(C.cmp_u32_prefix_lexical)
-	CmpU32PrefixU64     = (*Cmp)(C.cmp_u32_prefix_u64)
-	CmpU64PrefixLexical = (*Cmp)(C.cmp_u64_prefix_lexical)
-	CmpU64PrefixU64     = (*Cmp)(C.cmp_u64_prefix_u64)
+	CmpU16              = (*Cmp)(C.mdbx_cmp_u16)
+	CmpU32              = (*Cmp)(C.mdbx_cmp_u32)
+	CmpU64              = (*Cmp)(C.mdbx_cmp_u64)
+	CmpU16PrefixLexical = (*Cmp)(C.mdbx_cmp_u16_prefix_lexical)
+	CmpU16PrefixU64     = (*Cmp)(C.mdbx_cmp_u16_prefix_u64)
+	CmpU32PrefixLexical = (*Cmp)(C.mdbx_cmp_u32_prefix_lexical)
+	CmpU32PrefixU64     = (*Cmp)(C.mdbx_cmp_u32_prefix_u64)
+	CmpU64PrefixLexical = (*Cmp)(C.mdbx_cmp_u64_prefix_lexical)
+	CmpU64PrefixU64     = (*Cmp)(C.mdbx_cmp_u64_prefix_u64)
 )
 
 // Chk invokes the embedded mdbx_chk utility
