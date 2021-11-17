@@ -174,7 +174,7 @@ func (s *Store) UpdateLock(lockThread bool, fn func(tx *Tx) error) (err error) {
 	defer func() {
 		// Abort if panic
 		if !tx.IsCommitted() && !tx.IsAborted() && tx.txn != nil {
-			if err = tx.Abort(); err != ErrSuccess {
+			if e := tx.Abort(); e != ErrSuccess {
 				// Ignore
 			}
 		}
@@ -194,8 +194,8 @@ func (s *Store) UpdateLock(lockThread bool, fn func(tx *Tx) error) (err error) {
 	if err = fn(&tx); err != nil && err != ErrSuccess {
 		// Abort if necessary
 		if !tx.IsAborted() && !tx.IsCommitted() {
-			if err = tx.Abort(); err != ErrSuccess {
-				return err
+			if e := tx.Abort(); e != ErrSuccess {
+				// Ignore
 			}
 		}
 		return err
@@ -214,7 +214,7 @@ func (s *Store) View(fn func(tx *Tx) error) (err error) {
 	tx := Tx{}
 	defer func() {
 		if !tx.IsAborted() {
-			err = tx.Abort()
+			_ = tx.Abort()
 		}
 		// recovery
 		r := recover()
@@ -254,7 +254,7 @@ func (s *Store) ViewRenew(tx *Tx, fn func(tx *Tx) error) (err error) {
 
 func (s *Store) Sync() error {
 	update := atomic.LoadUint64(&s.updates)
-	if err := s.env.Sync(true, false); err != ErrSuccess {
+	if err := s.env.Sync(true, false); err != ErrSuccess && err != ErrResultTrue {
 		return err
 	}
 	atomic.StoreUint64(&s.synced, update)

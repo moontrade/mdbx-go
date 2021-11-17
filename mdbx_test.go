@@ -131,7 +131,7 @@ func initDB(path string) (*Engine, Error) {
 	//if engine.rootDB, err = engine.write.OpenDBI("m", DBIntegerKey|DBCreate); err != ErrSuccess {
 	//	return nil, err
 	//}
-	if engine.rootDB, err = engine.write.OpenDBIEx("m", DBIntegerKey|DBCreate, CmpU64, nil); err != ErrSuccess {
+	if engine.rootDB, err = engine.write.OpenDBIEx("m", DBCreate, CmpU64, nil); err != ErrSuccess {
 		return nil, err
 	}
 
@@ -252,6 +252,108 @@ func BenchmarkTxn_PutCursor(b *testing.B) {
 }
 
 func BenchmarkTxn_Get(b *testing.B) {
+	engine, err := initDB("./testdata/" + strconv.Itoa(b.N))
+	if err != ErrSuccess {
+		b.Fatal(err)
+	}
+	defer engine.env.Close(true)
+
+	key := uint64(0)
+	data := []byte("hello")
+
+	keyVal := U64(&key)
+	dataVal := Bytes(&data)
+
+	{
+		insert := func(low, high uint64) {
+			txn, err := engine.BeginWrite()
+			if err != ErrSuccess {
+				b.Fatal(err)
+			}
+
+			cursor, err := txn.OpenCursor(engine.rootDB)
+			if err != ErrSuccess {
+				b.Fatal(err)
+			}
+
+			for i := low; i < high; i++ {
+				key = i
+				if err = cursor.Put(&keyVal, &dataVal, PutAppend); err != ErrSuccess {
+					cursor.Close()
+					txn.Abort()
+					b.Fatal(err)
+				}
+			}
+
+			if err = cursor.Close(); err != ErrSuccess {
+				b.Fatal(err)
+			}
+			if err = txn.Commit(); err != ErrSuccess {
+				b.Fatal(err)
+			}
+		}
+
+		const batchSize = 10000000
+		for i := 0; i < b.N; i += batchSize {
+			end := i + batchSize
+			if end > b.N {
+				end = b.N
+			}
+			insert(uint64(i), uint64(end))
+		}
+	}
+
+	txn := &Tx{}
+
+	//engine.env.Sync(true, false)
+	//engine.env.Sync(true, false)
+
+	if err = engine.env.Begin(txn, TxReadOnly); err != ErrSuccess {
+		b.Fatal(err)
+	}
+	b.ResetTimer()
+	b.ReportAllocs()
+
+	//fmt.Println(dataVal.String())
+
+	//binary.LittleEndian.PutUint64(key, 0)
+
+	count := 0
+
+	for i := 1; i < b.N; i++ {
+		key = uint64(i)
+		keyVal = U64(&key)
+		//binary.BigEndian.PutUint64(key, uint64(20))
+		//binary.BigEndian.PutUint64(key[8:], uint64(i))
+		if err = txn.Get(engine.rootDB, &keyVal, &dataVal); err != ErrSuccess && err != ErrNotFound {
+			txn.Reset()
+			b.Fatal(err)
+		}
+		count++
+	}
+
+	if err = txn.Reset(); err != ErrSuccess {
+		b.Fatal(err)
+	}
+
+	b.StopTimer()
+
+	fmt.Println("count", count)
+
+	//var envInfo EnvInfo
+	//if err = txn.EnvInfo(&envInfo); err != ErrSuccess {
+	//	b.Fatal(err)
+	//}
+	//var info TxInfo
+	//if err = txn.Info(&info); err != ErrSuccess {
+	//	b.Fatal(err)
+	//}
+
+	//engine.env.Sync(true, false)
+	//engine.env.Sync(true, false)
+}
+
+func BenchmarkTxn_GetCursor(b *testing.B) {
 	engine, err := initDB("./testdata/" + strconv.Itoa(b.N))
 	if err != ErrSuccess {
 		b.Fatal(err)
