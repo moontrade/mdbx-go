@@ -100,6 +100,134 @@ int mdbx_cmp_u16_prefix_u64(const MDBX_val *a, const MDBX_val *b) {
   return 0;
 }
 
+int mdbx_cmp_u32_prefix_u64_dup_lexical(const MDBX_val *a, const MDBX_val *b) {
+  if (unlikely(a->iov_len < 12 || b->iov_len < 12)) {
+    return cmp_lexical(a, b);
+  }
+  uint32_t aa = *((uint32_t*)a->iov_base);
+  uint32_t bb = *((uint32_t*)a->iov_base);
+  if (aa < bb) {
+	return -1;
+  }
+  if (aa > bb) {
+    return 1;
+  }
+  if (a->iov_len == b->iov_len) {
+    int result = a->iov_len ? memcmp(a->iov_base+12, b->iov_base+12, a->iov_len-12) : 0;
+	if (result != 0) return result;
+
+	uint64_t aaa = *((uint64_t*)a->iov_base+4);
+	uint64_t bbb = *((uint64_t*)a->iov_base+4);
+	if (aaa < bbb) {
+	  return -1;
+	}
+	if (aaa > bbb) {
+	  return 1;
+	}
+	return 0;
+  }
+
+  const int diff_len = (a->iov_len < b->iov_len) ? -1 : 1;
+  const size_t shortest = (a->iov_len < b->iov_len) ? a->iov_len : b->iov_len;
+  int diff_data = shortest ? memcmp(a->iov_base+12, b->iov_base+12, shortest-12) : 0;
+  return likely(diff_data) ? diff_data : diff_len;
+}
+
+int mdbx_cmp_u64_prefix_u64_dup_lexical(const MDBX_val *a, const MDBX_val *b) {
+  if (unlikely(a->iov_len < 16 || b->iov_len < 16)) {
+    return cmp_lexical(a, b);
+  }
+  uint32_t aa = *((uint32_t*)a->iov_base);
+  uint32_t bb = *((uint32_t*)a->iov_base);
+  if (aa < bb) {
+	return -1;
+  }
+  if (aa > bb) {
+    return 1;
+  }
+  if (a->iov_len == b->iov_len) {
+    int result = a->iov_len ? memcmp(a->iov_base+16, b->iov_base+16, a->iov_len-16) : 0;
+	if (result != 0) return result;
+
+	uint64_t aaa = *((uint64_t*)a->iov_base+8);
+	uint64_t bbb = *((uint64_t*)a->iov_base+8);
+	if (aaa < bbb) {
+	  return -1;
+	}
+	if (aaa > bbb) {
+	  return 1;
+	}
+	return 0;
+  }
+
+  const int diff_len = (a->iov_len < b->iov_len) ? -1 : 1;
+  const size_t shortest = (a->iov_len < b->iov_len) ? a->iov_len : b->iov_len;
+  int diff_data = shortest ? memcmp(a->iov_base+16, b->iov_base+16, shortest-16) : 0;
+  return likely(diff_data) ? diff_data : diff_len;
+}
+
+int mdbx_cmp_u32_prefix_u64_dup_u64(const MDBX_val *a, const MDBX_val *b) {
+  if (unlikely(a->iov_len < 20 || b->iov_len < 20)) {
+    return cmp_lexical(a, b);
+  }
+  uint32_t aa = *((uint32_t*)a->iov_base);
+  uint32_t bb = *((uint32_t*)a->iov_base);
+  if (aa < bb) {
+	return -1;
+  }
+  if (aa > bb) {
+    return 1;
+  }
+  uint64_t av = *((uint64_t*)a->iov_base+12);
+  uint64_t bv = *((uint64_t*)a->iov_base+12);
+  if (av < bv) {
+	return -1;
+  }
+  if (av > bv) {
+    return 1;
+  }
+  av = *((uint64_t*)a->iov_base+4);
+  bv = *((uint64_t*)a->iov_base+4);
+  if (av < bv) {
+    return -1;
+  }
+  if (av > bv) {
+    return 1;
+  }
+  return 0;
+}
+
+int mdbx_cmp_u64_prefix_u64_dup_u64(const MDBX_val *a, const MDBX_val *b) {
+  if (unlikely(a->iov_len < 24 || b->iov_len < 24)) {
+    return cmp_lexical(a, b);
+  }
+  uint32_t aa = *((uint32_t*)a->iov_base);
+  uint32_t bb = *((uint32_t*)a->iov_base);
+  if (aa < bb) {
+	return -1;
+  }
+  if (aa > bb) {
+    return 1;
+  }
+  uint64_t av = *((uint64_t*)a->iov_base+16);
+  uint64_t bv = *((uint64_t*)a->iov_base+16);
+  if (av < bv) {
+	return -1;
+  }
+  if (av > bv) {
+    return 1;
+  }
+  av = *((uint64_t*)a->iov_base+8);
+  bv = *((uint64_t*)a->iov_base+8);
+  if (av < bv) {
+    return -1;
+  }
+  if (av > bv) {
+    return 1;
+  }
+  return 0;
+}
+
 int mdbx_cmp_u32_prefix_lexical(const MDBX_val *a, const MDBX_val *b) {
   if (unlikely(a->iov_len < 4 || b->iov_len < 4)) {
     return cmp_lexical(a, b);
@@ -768,15 +896,19 @@ func init() {
 type Cmp C.MDBX_cmp_func
 
 var (
-	CmpU16              = (*Cmp)(C.mdbx_cmp_u16)
-	CmpU32              = (*Cmp)(C.mdbx_cmp_u32)
-	CmpU64              = (*Cmp)(C.mdbx_cmp_u64)
-	CmpU16PrefixLexical = (*Cmp)(C.mdbx_cmp_u16_prefix_lexical)
-	CmpU16PrefixU64     = (*Cmp)(C.mdbx_cmp_u16_prefix_u64)
-	CmpU32PrefixLexical = (*Cmp)(C.mdbx_cmp_u32_prefix_lexical)
-	CmpU32PrefixU64     = (*Cmp)(C.mdbx_cmp_u32_prefix_u64)
-	CmpU64PrefixLexical = (*Cmp)(C.mdbx_cmp_u64_prefix_lexical)
-	CmpU64PrefixU64     = (*Cmp)(C.mdbx_cmp_u64_prefix_u64)
+	CmpU16                    = (*Cmp)(C.mdbx_cmp_u16)
+	CmpU32                    = (*Cmp)(C.mdbx_cmp_u32)
+	CmpU64                    = (*Cmp)(C.mdbx_cmp_u64)
+	CmpU16PrefixLexical       = (*Cmp)(C.mdbx_cmp_u16_prefix_lexical)
+	CmpU16PrefixU64           = (*Cmp)(C.mdbx_cmp_u16_prefix_u64)
+	CmpU32PrefixLexical       = (*Cmp)(C.mdbx_cmp_u32_prefix_lexical)
+	CmpU32PrefixU64           = (*Cmp)(C.mdbx_cmp_u32_prefix_u64)
+	CmpU64PrefixLexical       = (*Cmp)(C.mdbx_cmp_u64_prefix_lexical)
+	CmpU64PrefixU64           = (*Cmp)(C.mdbx_cmp_u64_prefix_u64)
+	CmpU32PrefixU64DupLexical = (*Cmp)(C.mdbx_cmp_u32_prefix_u64_dup_lexical)
+	CmpU32PrefixU64DupU64     = (*Cmp)(C.mdbx_cmp_u32_prefix_u64_dup_u64)
+	CmpU64PrefixU64DupLexical = (*Cmp)(C.mdbx_cmp_u64_prefix_u64_dup_lexical)
+	CmpU64PrefixU64DupU64     = (*Cmp)(C.mdbx_cmp_u64_prefix_u64_dup_u64)
 )
 
 // Chk invokes the embedded mdbx_chk utility
