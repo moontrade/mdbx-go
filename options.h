@@ -47,7 +47,7 @@
 /** Controls checking transaction owner thread against misuse transactions from
  * other threads. */
 #ifndef MDBX_TXN_CHECKOWNER
-#define MDBX_TXN_CHECKOWNER 1
+#define MDBX_TXN_CHECKOWNER 0
 #define MDBX_TXN_CHECKOWNER_CONFIG "AUTO=" MDBX_STRINGIFY(MDBX_TXN_CHECKOWNER)
 #else
 #define MDBX_TXN_CHECKOWNER_CONFIG MDBX_STRINGIFY(MDBX_TXN_CHECKOWNER)

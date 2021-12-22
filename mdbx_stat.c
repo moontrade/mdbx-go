@@ -89,7 +89,7 @@ static int reader_list_func(void *ctx, int num, int slot, mdbx_pid_t pid,
   return user_break ? MDBX_RESULT_TRUE : MDBX_RESULT_FALSE;
 }
 
-static const char *prog;
+const char *prog;
 static bool quiet = false;
 static void error(const char *func, int rc) {
   if (!quiet)
@@ -97,7 +97,6 @@ static void error(const char *func, int rc) {
             mdbx_strerror(rc));
 }
 
-//int main(int argc, char *argv[]) {
 int mdbx_stat(int argc, char *argv[]) {
   int opt, rc;
   MDBX_env *env;

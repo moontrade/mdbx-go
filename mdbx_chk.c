@@ -93,17 +93,17 @@ struct {
 #define dbi_main walk.dbi[MAIN_DBI]
 #define dbi_meta walk.dbi[CORE_DBS]
 
-static int envflags = MDBX_RDONLY | MDBX_EXCLUSIVE;
-static MDBX_env *env;
-static MDBX_txn *txn;
-static MDBX_envinfo envinfo;
-static size_t userdb_count, skipped_subdb;
-static uint64_t total_unused_bytes, reclaimable_pages, gc_pages, alloc_pages,
+int envflags = MDBX_RDONLY | MDBX_EXCLUSIVE;
+MDBX_env *env;
+MDBX_txn *txn;
+MDBX_envinfo envinfo;
+size_t userdb_count, skipped_subdb;
+uint64_t total_unused_bytes, reclaimable_pages, gc_pages, alloc_pages,
     unused_pages, backed_pages;
-static unsigned verbose;
+unsigned verbose;
 static bool ignore_wrong_order, quiet, dont_traversal;
-static const char *only_subdb;
-static int stuck_meta = -1;
+const char *only_subdb;
+int stuck_meta = -1;
 
 struct problem {
   struct problem *pr_next;
@@ -111,8 +111,8 @@ struct problem {
   const char *caption;
 };
 
-static struct problem *problems_list;
-static unsigned total_problems, data_tree_problems, gc_tree_problems;
+struct problem *problems_list;
+unsigned total_problems, data_tree_problems, gc_tree_problems;
 
 static void MDBX_PRINTF_ARGS(1, 2) print(const char *msg, ...) {
   if (!quiet) {
@@ -374,7 +374,7 @@ static int pgvisitor(const uint64_t pgno, const unsigned pgnumber,
   if (pgnumber) {
     if (verbose > 3 && (!only_subdb || strcmp(only_subdb, dbi->name) == 0)) {
       if (pgnumber == 1)
-        fprintf(stderr, "     %s-page %" PRIu64, pagetype_caption, pgno);
+        print("     %s-page %" PRIu64, pagetype_caption, pgno);
       else
         print("     %s-span %" PRIu64 "[%u]", pagetype_caption, pgno, pgnumber);
       print(" of %s: header %" PRIiPTR ", %s %" PRIiPTR ", payload %" PRIiPTR
@@ -1062,7 +1062,6 @@ static void print_size(const char *prefix, const uint64_t value,
   print("%s%" PRIu64 " (%.2f %cb)%s", prefix, value, value / k, sf[i], suffix);
 }
 
-//int main(int argc, char *argv[]) {
 int mdbx_chk(int argc, char *argv[]) {
   int rc;
   char *prog = argv[0];
