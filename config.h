@@ -32,7 +32,7 @@
 #define MDBX_WITHOUT_MSVC_CRT 0
 
 /* MacOS & iOS */
-#define MDBX_OSX_SPEED_INSTEADOF_DURABILITY 1
+#define MDBX_OSX_SPEED_INSTEADOF_DURABILITY 0
 
 /* POSIX */
 #define MDBX_DISABLE_GNU_SOURCE 0
@@ -43,7 +43,7 @@
 
 /* Build Info */
 #ifndef MDBX_BUILD_TIMESTAMP
-#define MDBX_BUILD_TIMESTAMP "2021-12-22T01:18:41Z"
+#define MDBX_BUILD_TIMESTAMP "2022-03-02T00:40:45Z"
 #endif
 #ifndef MDBX_BUILD_TARGET
 #define MDBX_BUILD_TARGET "ARM-Darwin"
@@ -52,12 +52,12 @@
 #define MDBX_BUILD_TYPE "Release"
 #endif
 #ifndef MDBX_BUILD_COMPILER
-#define MDBX_BUILD_COMPILER "Apple clang version 13.0.0 (clang-1300.0.29.3)"
+#define MDBX_BUILD_COMPILER "Apple clang version 13.0.0 (clang-1300.0.29.30)"
 #endif
 #ifndef MDBX_BUILD_FLAGS
 #define MDBX_BUILD_FLAGS " -fexceptions -fcxx-exceptions -frtti -fno-common -ggdb -Wno-unknown-pragmas -ffunction-sections -fdata-sections -Wall -Wextra -flto=thin -O3 -DNDEBUG LIBMDBX_EXPORTS MDBX_BUILD_SHARED_LIBRARY=1 -ffast-math -fvisibility=hidden"
 #endif
-#define MDBX_BUILD_SOURCERY 004edc1187448d447c4988dfc28948bfe5d337f6f05d34a8b59c0130bf851b5b_v0_11_2_24_g3c82ced0
+#define MDBX_BUILD_SOURCERY 6c4d894dab57b371b97f4deffd0943e367692232b8ace053cec44fd1aae843da_v0_11_5_0_gd01e44db
 
 /* *INDENT-ON* */
 /* clang-format on */

@@ -2,12 +2,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-//go:build !libfuzzer && (amd64 || arm64) && (linux || darwin)
-// +build !libfuzzer
-// +build amd64 arm64
-// +build linux darwin
-
-//#include "headers.h"
 #include "go_asm.h"
 #include "go_tls.h"
 #include "textflag.h"

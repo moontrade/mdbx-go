@@ -1,7 +1,7 @@
 /* https://en.wikipedia.org/wiki/Operating_system_abstraction_layer */
 
 /*
- * Copyright 2015-2021 Leonid Yuriev <leo@yuriev.ru>
+ * Copyright 2015-2022 Leonid Yuriev <leo@yuriev.ru>
  * and other libmdbx authors: please see AUTHORS file.
  * All rights reserved.
  *
@@ -56,18 +56,21 @@
 #include <string.h>
 #include <time.h>
 
-/* C11 stdalign.h */
+/* C11' alignas() */
 #if __has_include(<stdalign.h>)
 #include <stdalign.h>
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
-#define alignas(N) _Alignas(N)
-#elif defined(_MSC_VER)
-#define alignas(N) __declspec(align(N))
-#elif __has_attribute(__aligned__) || defined(__GNUC__)
-#define alignas(N) __attribute__((__aligned__(N)))
-#else
-#error "FIXME: Required _alignas() or equivalent."
 #endif
+#if defined(alignas) || defined(__cplusplus)
+#define MDBX_ALIGNAS(N) alignas(N)
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
+#define MDBX_ALIGNAS(N) _Alignas(N)
+#elif defined(_MSC_VER)
+#define MDBX_ALIGNAS(N) __declspec(align(N))
+#elif __has_attribute(__aligned__) || defined(__GNUC__)
+#define MDBX_ALIGNAS(N) __attribute__((__aligned__(N)))
+#else
+#error "FIXME: Required alignas() or equivalent."
+#endif /* MDBX_ALIGNAS */
 
 /*----------------------------------------------------------------------------*/
 /* Systems includes */

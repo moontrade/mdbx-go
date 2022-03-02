@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2021 Leonid Yuriev <leo@yuriev.ru>
+ * Copyright 2015-2022 Leonid Yuriev <leo@yuriev.ru>
  * and other libmdbx authors: please see AUTHORS file.
  * All rights reserved.
  *
@@ -112,6 +112,10 @@
 #pragma warning(                                                               \
     disable : 4505) /* unreferenced local function has been removed */
 #endif              /* _MSC_VER (warnings) */
+
+#if defined(__GNUC__) && __GNUC__ < 9
+#pragma GCC diagnostic ignored "-Wattributes"
+#endif /* GCC < 9 */
 
 #include "mdbx.h"
 #include "defs.h"
@@ -441,7 +445,7 @@ typedef struct MDBX_meta {
 #define MDBX_DATASIGN_WEAK 1u
 #define SIGN_IS_STEADY(sign) ((sign) > MDBX_DATASIGN_WEAK)
 #define META_IS_STEADY(meta)                                                   \
-  SIGN_IS_STEADY(unaligned_peek_u64(4, (meta)->mm_datasync_sign))
+  SIGN_IS_STEADY(unaligned_peek_u64_volatile(4, (meta)->mm_datasync_sign))
   uint32_t mm_datasync_sign[2];
 
   /* txnid that committed this page, the second of a two-phase-update pair */
@@ -670,19 +674,19 @@ typedef struct MDBX_lockinfo {
   /* Marker to distinguish uniqueness of DB/CLK. */
   MDBX_atomic_uint64_t mti_bait_uniqueness;
 
-  alignas(MDBX_CACHELINE_SIZE) /* cacheline ---------------------------------*/
+  MDBX_ALIGNAS(MDBX_CACHELINE_SIZE) /* cacheline ----------------------------*/
 
 #if MDBX_ENABLE_PGOP_STAT
-      /* Statistics of costly ops of all (running, completed and aborted)
-       * transactions */
-      MDBX_pgop_stat_t mti_pgop_stat;
+  /* Statistics of costly ops of all (running, completed and aborted)
+   * transactions */
+  MDBX_pgop_stat_t mti_pgop_stat;
 #endif /* MDBX_ENABLE_PGOP_STAT*/
 
-  alignas(MDBX_CACHELINE_SIZE) /* cacheline ---------------------------------*/
+  MDBX_ALIGNAS(MDBX_CACHELINE_SIZE) /* cacheline ----------------------------*/
 
   /* Write transaction lock. */
 #if MDBX_LOCKING > 0
-      mdbx_ipclock_t mti_wlock;
+  mdbx_ipclock_t mti_wlock;
 #endif /* MDBX_LOCKING > 0 */
 
   atomic_txnid_t mti_oldest_reader;
@@ -704,11 +708,11 @@ typedef struct MDBX_lockinfo {
   /* Shared anchor for tracking readahead edge and enabled/disabled status. */
   pgno_t mti_readahead_anchor;
 
-  alignas(MDBX_CACHELINE_SIZE) /* cacheline ---------------------------------*/
+  MDBX_ALIGNAS(MDBX_CACHELINE_SIZE) /* cacheline ----------------------------*/
 
   /* Readeaders registration lock. */
 #if MDBX_LOCKING > 0
-      mdbx_ipclock_t mti_rlock;
+  mdbx_ipclock_t mti_rlock;
 #endif /* MDBX_LOCKING > 0 */
 
   /* The number of slots that have been used in the reader table.
@@ -719,8 +723,8 @@ typedef struct MDBX_lockinfo {
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L) ||              \
     (!defined(__cplusplus) && defined(_MSC_VER))
-  alignas(MDBX_CACHELINE_SIZE) /* cacheline ---------------------------------*/
-      MDBX_reader mti_readers[] /* dynamic size */;
+  MDBX_ALIGNAS(MDBX_CACHELINE_SIZE) /* cacheline ----------------------------*/
+  MDBX_reader mti_readers[] /* dynamic size */;
 #endif /* C99 */
 } MDBX_lockinfo;
 
@@ -765,7 +769,7 @@ typedef struct MDBX_lockinfo {
 #else
 #define MAX_MAPSIZE32 UINT32_C(0x7f000000)
 #endif
-#define MAX_MAPSIZE64 (MAX_PAGENO * (uint64_t)MAX_PAGESIZE)
+#define MAX_MAPSIZE64 ((MAX_PAGENO + 1) * (uint64_t)MAX_PAGESIZE)
 
 #if MDBX_WORDBITS >= 64
 #define MAX_MAPSIZE MAX_MAPSIZE64
@@ -1218,25 +1222,21 @@ MDBX_INTERNAL_FUNC void mdbx_debug_log_va(int level, const char *function,
                                           int line, const char *fmt,
                                           va_list args);
 
-#define mdbx_log_enabled(msg) unlikely(msg <= mdbx_loglevel)
-
 #if MDBX_DEBUG
-
-#define mdbx_assert_enabled() unlikely(mdbx_runtime_flags &MDBX_DBG_ASSERT)
-
-#define mdbx_audit_enabled() unlikely(mdbx_runtime_flags &MDBX_DBG_AUDIT)
-
+#define mdbx_log_enabled(msg) unlikely(msg <= mdbx_loglevel)
+#define mdbx_audit_enabled() unlikely((mdbx_runtime_flags & MDBX_DBG_AUDIT))
 #else /* MDBX_DEBUG */
-
+#define mdbx_log_enabled(msg) (msg < MDBX_LOG_VERBOSE && msg <= mdbx_loglevel)
 #define mdbx_audit_enabled() (0)
+#endif /* MDBX_DEBUG */
 
-#if !defined(NDEBUG) || MDBX_FORCE_ASSERTIONS
+#if MDBX_FORCE_ASSERTIONS
 #define mdbx_assert_enabled() (1)
+#elif MDBX_DEBUG
+#define mdbx_assert_enabled() likely((mdbx_runtime_flags & MDBX_DBG_ASSERT))
 #else
 #define mdbx_assert_enabled() (0)
-#endif /* NDEBUG */
-
-#endif /* MDBX_DEBUG */
+#endif /* assertions */
 
 #if !MDBX_DEBUG && defined(__ANDROID_API__)
 #define mdbx_assert_fail(env, msg, func, line)                                 \
@@ -1248,33 +1248,33 @@ void mdbx_assert_fail(const MDBX_env *env, const char *msg, const char *func,
 
 #define mdbx_debug_extra(fmt, ...)                                             \
   do {                                                                         \
-    if (MDBX_DEBUG && mdbx_log_enabled(MDBX_LOG_EXTRA))                        \
+    if (mdbx_log_enabled(MDBX_LOG_EXTRA))                                      \
       mdbx_debug_log(MDBX_LOG_EXTRA, __func__, __LINE__, fmt, __VA_ARGS__);    \
   } while (0)
 
 #define mdbx_debug_extra_print(fmt, ...)                                       \
   do {                                                                         \
-    if (MDBX_DEBUG && mdbx_log_enabled(MDBX_LOG_EXTRA))                        \
+    if (mdbx_log_enabled(MDBX_LOG_EXTRA))                                      \
       mdbx_debug_log(MDBX_LOG_EXTRA, NULL, 0, fmt, __VA_ARGS__);               \
   } while (0)
 
 #define mdbx_trace(fmt, ...)                                                   \
   do {                                                                         \
-    if (MDBX_DEBUG && mdbx_log_enabled(MDBX_LOG_TRACE))                        \
+    if (mdbx_log_enabled(MDBX_LOG_TRACE))                                      \
       mdbx_debug_log(MDBX_LOG_TRACE, __func__, __LINE__, fmt "\n",             \
                      __VA_ARGS__);                                             \
   } while (0)
 
 #define mdbx_debug(fmt, ...)                                                   \
   do {                                                                         \
-    if (MDBX_DEBUG && mdbx_log_enabled(MDBX_LOG_DEBUG))                        \
+    if (mdbx_log_enabled(MDBX_LOG_DEBUG))                                      \
       mdbx_debug_log(MDBX_LOG_DEBUG, __func__, __LINE__, fmt "\n",             \
                      __VA_ARGS__);                                             \
   } while (0)
 
 #define mdbx_verbose(fmt, ...)                                                 \
   do {                                                                         \
-    if (MDBX_DEBUG && mdbx_log_enabled(MDBX_LOG_VERBOSE))                      \
+    if (mdbx_log_enabled(MDBX_LOG_VERBOSE))                                    \
       mdbx_debug_log(MDBX_LOG_VERBOSE, __func__, __LINE__, fmt "\n",           \
                      __VA_ARGS__);                                             \
   } while (0)
@@ -1526,15 +1526,23 @@ typedef struct MDBX_node {
 #define MDBX_NOSPILL 0x8000
 
 MDBX_MAYBE_UNUSED MDBX_NOTHROW_CONST_FUNCTION static __inline pgno_t
-pgno_add(pgno_t base, pgno_t augend) {
-  assert(base <= MAX_PAGENO);
-  return (augend < MAX_PAGENO - base) ? base + augend : MAX_PAGENO;
+int64pgno(int64_t i64) {
+  if (likely(i64 >= (int64_t)MIN_PAGENO && i64 <= (int64_t)MAX_PAGENO + 1))
+    return (pgno_t)i64;
+  return (i64 < (int64_t)MIN_PAGENO) ? MIN_PAGENO : MAX_PAGENO;
 }
 
 MDBX_MAYBE_UNUSED MDBX_NOTHROW_CONST_FUNCTION static __inline pgno_t
-pgno_sub(pgno_t base, pgno_t subtrahend) {
-  assert(base >= MIN_PAGENO);
-  return (subtrahend < base - MIN_PAGENO) ? base - subtrahend : MIN_PAGENO;
+pgno_add(size_t base, size_t augend) {
+  assert(base <= MAX_PAGENO + 1 && augend < MAX_PAGENO);
+  return int64pgno(base + augend);
+}
+
+MDBX_MAYBE_UNUSED MDBX_NOTHROW_CONST_FUNCTION static __inline pgno_t
+pgno_sub(size_t base, size_t subtrahend) {
+  assert(base >= MIN_PAGENO && base <= MAX_PAGENO + 1 &&
+         subtrahend < MAX_PAGENO);
+  return int64pgno(base - subtrahend);
 }
 
 MDBX_MAYBE_UNUSED MDBX_NOTHROW_CONST_FUNCTION static __always_inline bool

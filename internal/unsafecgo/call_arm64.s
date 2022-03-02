@@ -2,12 +2,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-//go:build !libfuzzer && (amd64 || arm64) && (linux || darwin)
-// +build !libfuzzer
-// +build amd64 arm64
-// +build linux darwin
-
-#include "headers.h"
 #include "textflag.h"
 
 // Based on race_arm64.s; see commentary there.
@@ -24,10 +18,10 @@
 // Safer to add build tag "libfuzzer" to hook into the auto-generated "go_asm.h".
 // However, it's about ~1ns slower per call because of linking overhead somehow.
 
-//#define g_m 48
-//#define g_sched 56
-//#define gobuf_sp 0
-//#define m_g0 0
+#define g_m 48
+#define g_sched 56
+#define gobuf_sp 0
+#define m_g0 0
 
 // func runtime·libfuzzerCall(fn, arg0, arg1 uintptr)
 // Calls C function fn from libFuzzer and passes 2 arguments to it.

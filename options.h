@@ -47,7 +47,7 @@
 /** Controls checking transaction owner thread against misuse transactions from
  * other threads. */
 #ifndef MDBX_TXN_CHECKOWNER
-#define MDBX_TXN_CHECKOWNER 0
+#define MDBX_TXN_CHECKOWNER 1
 #define MDBX_TXN_CHECKOWNER_CONFIG "AUTO=" MDBX_STRINGIFY(MDBX_TXN_CHECKOWNER)
 #else
 #define MDBX_TXN_CHECKOWNER_CONFIG MDBX_STRINGIFY(MDBX_TXN_CHECKOWNER)
@@ -361,17 +361,29 @@
 #endif /* MDBX_64BIT_CAS */
 
 #ifndef MDBX_UNALIGNED_OK
-#ifdef _MSC_VER
-#define MDBX_UNALIGNED_OK 1 /* avoid MSVC misoptimization */
+#if defined(__ALIGNED__) || defined(__SANITIZE_UNDEFINED__)
+#define MDBX_UNALIGNED_OK 0 /* no unaligned access allowed */
+#elif defined(__ARM_FEATURE_UNALIGNED)
+#define MDBX_UNALIGNED_OK 4 /* ok unaligned for 32-bit words */
 #elif __CLANG_PREREQ(5, 0) || __GNUC_PREREQ(5, 0)
-#define MDBX_UNALIGNED_OK 0 /* expecting optimization is well done */
-#elif (defined(__ia32__) || defined(__ARM_FEATURE_UNALIGNED)) &&               \
-    !defined(__ALIGNED__)
-#define MDBX_UNALIGNED_OK 1
-#else
+/* expecting an optimization will well done, also this
+ * hushes false-positives from UBSAN (undefined behaviour sanitizer) */
 #define MDBX_UNALIGNED_OK 0
+#elif defined(__e2k__) || defined(__elbrus__)
+#if __iset__ > 4
+#define MDBX_UNALIGNED_OK 8 /* ok unaligned for 64-bit words */
+#else
+#define MDBX_UNALIGNED_OK 4 /* ok unaligned for 32-bit words */
 #endif
-#endif /* MDBX_UNALIGNED_OK */
+#elif defined(__ia32__)
+#define MDBX_UNALIGNED_OK 8 /* ok unaligned for 64-bit words */
+#else
+#define MDBX_UNALIGNED_OK 0 /* no unaligned access allowed */
+#endif
+#elif MDBX_UNALIGNED_OK == 1
+#undef MDBX_UNALIGNED_OK
+#define MDBX_UNALIGNED_OK 32 /* any unaligned access allowed */
+#endif                       /* MDBX_UNALIGNED_OK */
 
 #ifndef MDBX_CACHELINE_SIZE
 #if defined(SYSTEM_CACHE_ALIGNMENT_SIZE)

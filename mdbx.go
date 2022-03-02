@@ -1022,7 +1022,7 @@ func Stat(args ...string) (result int32, output []byte, err error) {
 	return
 }
 
-// Stat invokes the embedded mdbx_stat utility and exits the program.
+// StatMain invokes the embedded mdbx_stat utility and exits the program.
 // usage: mdbx_stat [-V] [-q] [-e] [-f[f[f]]] [-r[r]] [-a|-s name] dbpath
 //  -V            print version and exit
 //  -q            be quiet
