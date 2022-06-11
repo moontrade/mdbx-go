@@ -1,8 +1,4 @@
 //go:build !libfuzzer && !tinygo && (amd64 || arm64) && (linux || darwin)
-// +build !libfuzzer
-// +build !tinygo
-// +build amd64 arm64
-// +build linux darwin
 
 package unsafecgo
 
