@@ -10,7 +10,15 @@ import (
 )
 
 func TestChk(t *testing.T) {
-	_, out, err := Chk("-v", "-w", "testdata/1000000/mdbx.dat")
+	_, out, err := Chk("-v", "-w", "testdata/12539151/mdbx.dat")
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(string(out))
+}
+
+func TestStat(t *testing.T) {
+	_, out, err := Stat("-w", "testdata/75548709/mdbx.dat")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -128,12 +136,12 @@ func initDB(path string) (*Engine, Error) {
 		return nil, err
 	}
 
-	//if engine.rootDB, err = engine.write.OpenDBI("m", DBIntegerKey|DBCreate); err != ErrSuccess {
-	//	return nil, err
-	//}
-	if engine.rootDB, err = engine.write.OpenDBIEx("m", DBCreate, CmpU64, nil); err != ErrSuccess {
+	if engine.rootDB, err = engine.write.OpenDBI("m", DBIntegerKey|DBCreate); err != ErrSuccess {
 		return nil, err
 	}
+	//if engine.rootDB, err = engine.write.OpenDBIEx("m", DBCreate, CmpU64, nil); err != ErrSuccess {
+	//	return nil, err
+	//}
 
 	if err = engine.write.Commit(); err != ErrSuccess {
 		return nil, err

@@ -913,17 +913,18 @@ var (
 
 // Chk invokes the embedded mdbx_chk utility
 // usage: mdbx_chk [-V] [-v] [-q] [-c] [-0|1|2] [-w] [-d] [-i] [-s subdb] dbpath
-//  -V            print version and exit
-//  -v            more verbose, could be used multiple times
-//  -q            be quiet
-//  -c            force cooperative mode (don't try exclusive)
-//  -w            write-mode checking
-//  -d            disable page-by-page traversal of B-tree
-//  -i            ignore wrong order errors (for custom comparators case)
-//  -s subdb      process a specific subdatabase only
-//  -0|1|2        force using specific meta-page 0, or 2 for checking
-//  -t            turn to a specified meta-page on successful check
-//  -T            turn to a specified meta-page EVEN ON UNSUCCESSFUL CHECK!
+//
+//	-V            print version and exit
+//	-v            more verbose, could be used multiple times
+//	-q            be quiet
+//	-c            force cooperative mode (don't try exclusive)
+//	-w            write-mode checking
+//	-d            disable page-by-page traversal of B-tree
+//	-i            ignore wrong order errors (for custom comparators case)
+//	-s subdb      process a specific subdatabase only
+//	-0|1|2        force using specific meta-page 0, or 2 for checking
+//	-t            turn to a specified meta-page on successful check
+//	-T            turn to a specified meta-page EVEN ON UNSUCCESSFUL CHECK!
 func Chk(args ...string) (result int32, output []byte, err error) {
 	argv := make([]*C.char, len(args)+1)
 	argv[0] = C.CString("mdbx_chk")
@@ -968,17 +969,18 @@ func Chk(args ...string) (result int32, output []byte, err error) {
 
 // ChkMain invokes the embedded mdbx_chk utility and exits the program.
 // usage: mdbx_chk [-V] [-v] [-q] [-c] [-0|1|2] [-w] [-d] [-i] [-s subdb] dbpath
-//  -V            print version and exit
-//  -v            more verbose, could be used multiple times
-//  -q            be quiet
-//  -c            force cooperative mode (don't try exclusive)
-//  -w            write-mode checking
-//  -d            disable page-by-page traversal of B-tree
-//  -i            ignore wrong order errors (for custom comparators case)
-//  -s subdb      process a specific subdatabase only
-//  -0|1|2        force using specific meta-page 0, or 2 for checking
-//  -t            turn to a specified meta-page on successful check
-//  -T            turn to a specified meta-page EVEN ON UNSUCCESSFUL CHECK!
+//
+//	-V            print version and exit
+//	-v            more verbose, could be used multiple times
+//	-q            be quiet
+//	-c            force cooperative mode (don't try exclusive)
+//	-w            write-mode checking
+//	-d            disable page-by-page traversal of B-tree
+//	-i            ignore wrong order errors (for custom comparators case)
+//	-s subdb      process a specific subdatabase only
+//	-0|1|2        force using specific meta-page 0, or 2 for checking
+//	-t            turn to a specified meta-page on successful check
+//	-T            turn to a specified meta-page EVEN ON UNSUCCESSFUL CHECK!
 func ChkMain(args ...string) {
 	argv := make([]*C.char, len(args)+1)
 	argv[0] = C.CString("mdbx_chk")
@@ -996,15 +998,16 @@ func ChkMain(args ...string) {
 
 // Stat invokes the embedded mdbx_stat utility.
 // usage: mdbx_stat [-V] [-q] [-e] [-f[f[f]]] [-r[r]] [-a|-s name] dbpath
-//  -V            print version and exit
-//  -q            be quiet
-//  -p            show statistics of page operations for current session
-//  -e            show whole DB info
-//  -f            show GC info
-//  -r            show readers
-//  -a            print stat of main DB and all subDBs
-//  -s name       print stat of only the specified named subDB
-//                by default print stat of only the main DB
+//
+//	-V            print version and exit
+//	-q            be quiet
+//	-p            show statistics of page operations for current session
+//	-e            show whole DB info
+//	-f            show GC info
+//	-r            show readers
+//	-a            print stat of main DB and all subDBs
+//	-s name       print stat of only the specified named subDB
+//	              by default print stat of only the main DB
 func Stat(args ...string) (result int32, output []byte, err error) {
 	argv := make([]*C.char, len(args)+1)
 	argv[0] = C.CString("mdbx_stat")
@@ -1024,15 +1027,16 @@ func Stat(args ...string) (result int32, output []byte, err error) {
 
 // StatMain invokes the embedded mdbx_stat utility and exits the program.
 // usage: mdbx_stat [-V] [-q] [-e] [-f[f[f]]] [-r[r]] [-a|-s name] dbpath
-//  -V            print version and exit
-//  -q            be quiet
-//  -p            show statistics of page operations for current session
-//  -e            show whole DB info
-//  -f            show GC info
-//  -r            show readers
-//  -a            print stat of main DB and all subDBs
-//  -s name       print stat of only the specified named subDB
-//                by default print stat of only the main DB
+//
+//	-V            print version and exit
+//	-q            be quiet
+//	-p            show statistics of page operations for current session
+//	-e            show whole DB info
+//	-f            show GC info
+//	-r            show readers
+//	-a            print stat of main DB and all subDBs
+//	-s name       print stat of only the specified named subDB
+//	              by default print stat of only the main DB
 func StatMain(args ...string) {
 	argv := make([]*C.char, len(args)+1)
 	argv[0] = C.CString("mdbx_chk")
@@ -2054,19 +2058,24 @@ const (
 // \ingroup c_extra
 //
 // \param [in] pathname  The pathname for the database or the directory in which
-//                       the database files reside.
+//
+//	the database files reside.
 //
 // \param [in] mode      Special deletion mode for the environment. This
-//                       parameter must be set to one of the values described
-//                       above in the \ref MDBX_env_delete_mode_t section.
+//
+//	parameter must be set to one of the values described
+//	above in the \ref MDBX_env_delete_mode_t section.
 //
 // \note The \ref MDBX_ENV_JUST_DELETE don't supported on Windows since system
 // unable to delete a memory-mapped files.
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_RESULT_TRUE   No corresponding files or directories were found,
-//                            so no deletion was performed.
+//
+//	so no deletion was performed.
 func Delete(path string, mode DeleteMode) Error {
 	p := C.CString(path)
 	defer C.free(unsafe.Pointer(p))
@@ -2207,32 +2216,39 @@ func (env *Env) MaxKeySize() int {
 // call.
 //
 // \param [in] env        An environment handle returned by
-//                        \ref mdbx_env_create().
+//
+//	\ref mdbx_env_create().
 //
 // \param [in] dont_sync  A dont'sync flag, if non-zero the last checkpoint
-//                        will be kept "as is" and may be still "weak" in the
-//                        \ref MDBX_SAFE_NOSYNC or \ref MDBX_UTTERLY_NOSYNC
-//                        modes. Such "weak" checkpoint will be ignored on
-//                        opening next time, and transactions since the last
-//                        non-weak checkpoint (meta-page update) will rolledback
-//                        for consistency guarantee.
+//
+//	will be kept "as is" and may be still "weak" in the
+//	\ref MDBX_SAFE_NOSYNC or \ref MDBX_UTTERLY_NOSYNC
+//	modes. Such "weak" checkpoint will be ignored on
+//	opening next time, and transactions since the last
+//	non-weak checkpoint (meta-page update) will rolledback
+//	for consistency guarantee.
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_BUSY   The write transaction is running by other thread,
-//                     in such case \ref MDBX_env instance has NOT be destroyed
-//                     not released!
-//                     \note If any OTHER error code was returned then
-//                     given MDBX_env instance has been destroyed and released.
+//
+//	in such case \ref MDBX_env instance has NOT be destroyed
+//	not released!
+//	\note If any OTHER error code was returned then
+//	given MDBX_env instance has been destroyed and released.
 //
 // \retval MDBX_EBADSIGN  Environment handle already closed or not valid,
-//                        i.e. \ref mdbx_env_close() was already called for the
-//                        `env` or was not created by \ref mdbx_env_create().
+//
+//	i.e. \ref mdbx_env_close() was already called for the
+//	`env` or was not created by \ref mdbx_env_create().
 //
 // \retval MDBX_PANIC  If \ref mdbx_env_close_ex() was called in the child
-//                     process after `fork()`. In this case \ref MDBX_PANIC
-//                     is expected, i.e. \ref MDBX_env instance was freed in
-//                     proper manner.
+//
+//	process after `fork()`. In this case \ref MDBX_PANIC
+//	is expected, i.e. \ref MDBX_env instance was freed in
+//	proper manner.
 //
 // \retval MDBX_EIO    An error occurred during synchronization.
 func (env *Env) Close(dontSync bool) Error {
@@ -2262,12 +2278,16 @@ func (env *Env) Close(dontSync bool) Error {
 // function called within a write transaction.
 //
 // \param [in] env      An environment handle returned
-//                      by \ref mdbx_env_create().
+//
+//	by \ref mdbx_env_create().
+//
 // \param [in] flags    The \ref env_flags to change, bitwise OR'ed together.
 // \param [in] onoff    A non-zero value sets the flags, zero clears them.
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_EINVAL  An invalid parameter was specified.
 func (env *Env) SetFlags(flags EnvFlags, onoff bool) Error {
 	return Error(C.mdbx_env_set_flags(env.env, (C.MDBX_env_flags_t)(flags), (C.bool)(onoff)))
@@ -2281,7 +2301,9 @@ func (env *Env) SetFlags(flags EnvFlags, onoff bool) Error {
 // \param [out] flags  The address of an integer to store the flags.
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_EINVAL An invalid parameter was specified.
 func (env *Env) GetFlags() (EnvFlags, Error) {
 	flags := C.unsigned(0)
@@ -2299,22 +2321,27 @@ func (env *Env) GetFlags() (EnvFlags, Error) {
 // transaction. See long-lived transactions under \ref restrictions section.
 //
 // \param [in] env    An environment handle returned by mdbx_env_create().
-//                    It must have already been opened successfully.
+//
+//	It must have already been opened successfully.
+//
 // \param [in] dest   The pathname of a file in which the copy will reside.
-//                    This file must not be already exist, but parent directory
-//                    must be writable.
+//
+//	This file must not be already exist, but parent directory
+//	must be writable.
+//
 // \param [in] flags  Special options for this operation. This parameter must
-//                    be set to 0 or by bitwise OR'ing together one or more
-//                    of the values described here:
 //
-//  - \ref MDBX_CP_COMPACT
-//      Perform compaction while copying: omit free pages and sequentially
-//      renumber all pages in output. This option consumes little bit more
-//      CPU for processing, but may running quickly than the default, on
-//      account skipping free pages.
+//	                  be set to 0 or by bitwise OR'ing together one or more
+//	                  of the values described here:
 //
-//  - \ref MDBX_CP_FORCE_DYNAMIC_SIZE
-//      Force to make resizeable copy, i.e. dynamic size instead of fixed.
+//	- \ref MDBX_CP_COMPACT
+//	    Perform compaction while copying: omit free pages and sequentially
+//	    renumber all pages in output. This option consumes little bit more
+//	    CPU for processing, but may running quickly than the default, on
+//	    account skipping free pages.
+//
+//	- \ref MDBX_CP_FORCE_DYNAMIC_SIZE
+//	    Force to make resizeable copy, i.e. dynamic size instead of fixed.
 //
 // \returns A non-zero error value on failure and 0 on success.
 func (env *Env) Copy(dest string, flags CopyFlags) Error {
@@ -2334,32 +2361,38 @@ func (env *Env) Copy(dest string, flags CopyFlags) Error {
 // resources.
 //
 // \param [in] env       An environment handle returned
-//                       by \ref mdbx_env_create()
+//
+//	by \ref mdbx_env_create()
 //
 // \param [in] pathname  The pathname for the database or the directory in which
-//                       the database files reside. In the case of directory it
-//                       must already exist and be writable.
+//
+//	the database files reside. In the case of directory it
+//	must already exist and be writable.
 //
 // \param [in] flags     Special options for this environment. This parameter
-//                       must be set to 0 or by bitwise OR'ing together one
-//                       or more of the values described above in the
-//                       \ref env_flags and \ref sync_modes sections.
+//
+//	must be set to 0 or by bitwise OR'ing together one
+//	or more of the values described above in the
+//	\ref env_flags and \ref sync_modes sections.
 //
 // Flags set by mdbx_env_set_flags() are also used:
-//  - \ref MDBX_NOSUBDIR, \ref MDBX_RDONLY, \ref MDBX_EXCLUSIVE,
-//    \ref MDBX_WRITEMAP, \ref MDBX_NOTLS, \ref MDBX_NORDAHEAD,
-//    \ref MDBX_NOMEMINIT, \ref MDBX_COALESCE, \ref MDBX_LIFORECLAIM.
-//    See \ref env_flags section.
 //
-//  - \ref MDBX_NOMETASYNC, \ref MDBX_SAFE_NOSYNC, \ref MDBX_UTTERLY_NOSYNC.
-//    See \ref sync_modes section.
+//   - \ref MDBX_NOSUBDIR, \ref MDBX_RDONLY, \ref MDBX_EXCLUSIVE,
+//     \ref MDBX_WRITEMAP, \ref MDBX_NOTLS, \ref MDBX_NORDAHEAD,
+//     \ref MDBX_NOMEMINIT, \ref MDBX_COALESCE, \ref MDBX_LIFORECLAIM.
+//     See \ref env_flags section.
+//
+//   - \ref MDBX_NOMETASYNC, \ref MDBX_SAFE_NOSYNC, \ref MDBX_UTTERLY_NOSYNC.
+//     See \ref sync_modes section.
 //
 // \note `MDB_NOLOCK` flag don't supported by MDBX,
-//       try use \ref MDBX_EXCLUSIVE as a replacement.
+//
+//	try use \ref MDBX_EXCLUSIVE as a replacement.
 //
 // \note MDBX don't allow to mix processes with different \ref MDBX_SAFE_NOSYNC
-//       flags on the same environment.
-//       In such case \ref MDBX_INCOMPATIBLE will be returned.
+//
+//	flags on the same environment.
+//	In such case \ref MDBX_INCOMPATIBLE will be returned.
 //
 // If the database is already exist and parameters specified early by
 // \ref mdbx_env_set_geometry() are incompatible (i.e. for instance, different
@@ -2367,35 +2400,49 @@ func (env *Env) Copy(dest string, flags CopyFlags) Error {
 // error.
 //
 // \param [in] mode   The UNIX permissions to set on created files.
-//                    Zero value means to open existing, but do not create.
+//
+//	Zero value means to open existing, but do not create.
 //
 // \return A non-zero error value on failure and 0 on success,
-//         some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_VERSION_MISMATCH The version of the MDBX library doesn't match
-//                            the version that created the database environment.
+//
+//	the version that created the database environment.
+//
 // \retval MDBX_INVALID       The environment file headers are corrupted.
 // \retval MDBX_ENOENT        The directory specified by the path parameter
-//                            doesn't exist.
+//
+//	doesn't exist.
+//
 // \retval MDBX_EACCES        The user didn't have permission to access
-//                            the environment files.
+//
+//	the environment files.
+//
 // \retval MDBX_EAGAIN        The environment was locked by another process.
 // \retval MDBX_BUSY          The \ref MDBX_EXCLUSIVE flag was specified and the
-//                            environment is in use by another process,
-//                            or the current process tries to open environment
-//                            more than once.
+//
+//	environment is in use by another process,
+//	or the current process tries to open environment
+//	more than once.
+//
 // \retval MDBX_INCOMPATIBLE  Environment is already opened by another process,
-//                            but with different set of \ref MDBX_SAFE_NOSYNC,
-//                            \ref MDBX_UTTERLY_NOSYNC flags.
-//                            Or if the database is already exist and parameters
-//                            specified early by \ref mdbx_env_set_geometry()
-//                            are incompatible (i.e. different pagesize, etc).
+//
+//	but with different set of \ref MDBX_SAFE_NOSYNC,
+//	\ref MDBX_UTTERLY_NOSYNC flags.
+//	Or if the database is already exist and parameters
+//	specified early by \ref mdbx_env_set_geometry()
+//	are incompatible (i.e. different pagesize, etc).
 //
 // \retval MDBX_WANNA_RECOVERY The \ref MDBX_RDONLY flag was specified but
-//                             read-write access is required to rollback
-//                             inconsistent state after a system crash.
+//
+//	read-write access is required to rollback
+//	inconsistent state after a system crash.
 //
 // \retval MDBX_TOO_LARGE      Database is too large for this process,
-//                             i.e. 32-bit process tries to open >4Gb database.
+//
+//	i.e. 32-bit process tries to open >4Gb database.
 func (env *Env) Open(path string, flags EnvFlags, mode os.FileMode) Error {
 	if env.opened > 0 {
 		return ErrSuccess
@@ -2445,87 +2492,87 @@ type Geometry struct {
 // either before or after \ref mdbx_env_open(), either within the write
 // transaction running by current thread or not:
 //
-//  - In case \ref mdbx_env_info_ex() or legacy \ref mdbx_env_info() was called
-//    BEFORE \ref mdbx_env_open(), i.e. for closed environment, then the
-//    specified parameters will be used for new database creation, or will be
-//    applied during opening if database exists and no other process using it.
+//   - In case \ref mdbx_env_info_ex() or legacy \ref mdbx_env_info() was called
+//     BEFORE \ref mdbx_env_open(), i.e. for closed environment, then the
+//     specified parameters will be used for new database creation, or will be
+//     applied during opening if database exists and no other process using it.
 //
-//    If the database is already exist, opened with \ref MDBX_EXCLUSIVE or not
-//    used by any other process, and parameters specified by
-//    \ref mdbx_env_set_geometry() are incompatible (i.e. for instance,
-//    different page size) then \ref mdbx_env_open() will return
-//    \ref MDBX_INCOMPATIBLE error.
+//     If the database is already exist, opened with \ref MDBX_EXCLUSIVE or not
+//     used by any other process, and parameters specified by
+//     \ref mdbx_env_set_geometry() are incompatible (i.e. for instance,
+//     different page size) then \ref mdbx_env_open() will return
+//     \ref MDBX_INCOMPATIBLE error.
 //
-//    In another way, if database will opened read-only or will used by other
-//    process during calling \ref mdbx_env_open() that specified parameters will
-//    silently discarded (open the database with \ref MDBX_EXCLUSIVE flag
-//    to avoid this).
+//     In another way, if database will opened read-only or will used by other
+//     process during calling \ref mdbx_env_open() that specified parameters will
+//     silently discarded (open the database with \ref MDBX_EXCLUSIVE flag
+//     to avoid this).
 //
-//  - In case \ref mdbx_env_info_ex() or legacy \ref mdbx_env_info() was called
-//    after \ref mdbx_env_open() WITHIN the write transaction running by current
-//    thread, then specified parameters will be applied as a part of write
-//    transaction, i.e. will not be visible to any others processes until the
-//    current write transaction has been committed by the current process.
-//    However, if transaction will be aborted, then the database file will be
-//    reverted to the previous size not immediately, but when a next transaction
-//    will be committed or when the database will be opened next time.
+//   - In case \ref mdbx_env_info_ex() or legacy \ref mdbx_env_info() was called
+//     after \ref mdbx_env_open() WITHIN the write transaction running by current
+//     thread, then specified parameters will be applied as a part of write
+//     transaction, i.e. will not be visible to any others processes until the
+//     current write transaction has been committed by the current process.
+//     However, if transaction will be aborted, then the database file will be
+//     reverted to the previous size not immediately, but when a next transaction
+//     will be committed or when the database will be opened next time.
 //
-//  - In case \ref mdbx_env_info_ex() or legacy \ref mdbx_env_info() was called
-//    after \ref mdbx_env_open() but OUTSIDE a write transaction, then MDBX will
-//    execute internal pseudo-transaction to apply new parameters (but only if
-//    anything has been changed), and changes be visible to any others processes
-//    immediately after succesful completion of function.
+//   - In case \ref mdbx_env_info_ex() or legacy \ref mdbx_env_info() was called
+//     after \ref mdbx_env_open() but OUTSIDE a write transaction, then MDBX will
+//     execute internal pseudo-transaction to apply new parameters (but only if
+//     anything has been changed), and changes be visible to any others processes
+//     immediately after succesful completion of function.
 //
 // Essentially a concept of "automatic size management" is simple and useful:
-//  - There are the lower and upper bound of the database file size;
-//  - There is the growth step by which the database file will be increased,
-//    in case of lack of space.
-//  - There is the threshold for unused space, beyond which the database file
-//    will be shrunk.
-//  - The size of the memory map is also the maximum size of the database.
-//  - MDBX will automatically manage both the size of the database and the size
-//    of memory map, according to the given parameters.
+//   - There are the lower and upper bound of the database file size;
+//   - There is the growth step by which the database file will be increased,
+//     in case of lack of space.
+//   - There is the threshold for unused space, beyond which the database file
+//     will be shrunk.
+//   - The size of the memory map is also the maximum size of the database.
+//   - MDBX will automatically manage both the size of the database and the size
+//     of memory map, according to the given parameters.
 //
 // So, there some considerations about choosing these parameters:
-//  - The lower bound allows you to prevent database shrinking below some
-//    rational size to avoid unnecessary resizing costs.
-//  - The upper bound allows you to prevent database growth above some rational
-//    size. Besides, the upper bound defines the linear address space
-//    reservation in each process that opens the database. Therefore changing
-//    the upper bound is costly and may be required reopening environment in
-//    case of \ref MDBX_UNABLE_EXTEND_MAPSIZE errors, and so on. Therefore, this
-//    value should be chosen reasonable as large as possible, to accommodate
-//    future growth of the database.
-//  - The growth step must be greater than zero to allow the database to grow,
-//    but also reasonable not too small, since increasing the size by little
-//    steps will result a large overhead.
-//  - The shrink threshold must be greater than zero to allow the database
-//    to shrink but also reasonable not too small (to avoid extra overhead) and
-//    not less than growth step to avoid up-and-down flouncing.
-//  - The current size (i.e. size_now argument) is an auxiliary parameter for
-//    simulation legacy \ref mdbx_env_set_mapsize() and as workaround Windows
-//    issues (see below).
+//   - The lower bound allows you to prevent database shrinking below some
+//     rational size to avoid unnecessary resizing costs.
+//   - The upper bound allows you to prevent database growth above some rational
+//     size. Besides, the upper bound defines the linear address space
+//     reservation in each process that opens the database. Therefore changing
+//     the upper bound is costly and may be required reopening environment in
+//     case of \ref MDBX_UNABLE_EXTEND_MAPSIZE errors, and so on. Therefore, this
+//     value should be chosen reasonable as large as possible, to accommodate
+//     future growth of the database.
+//   - The growth step must be greater than zero to allow the database to grow,
+//     but also reasonable not too small, since increasing the size by little
+//     steps will result a large overhead.
+//   - The shrink threshold must be greater than zero to allow the database
+//     to shrink but also reasonable not too small (to avoid extra overhead) and
+//     not less than growth step to avoid up-and-down flouncing.
+//   - The current size (i.e. size_now argument) is an auxiliary parameter for
+//     simulation legacy \ref mdbx_env_set_mapsize() and as workaround Windows
+//     issues (see below).
 //
 // Unfortunately, Windows has is a several issues
 // with resizing of memory-mapped file:
-//  - Windows unable shrinking a memory-mapped file (i.e memory-mapped section)
-//    in any way except unmapping file entirely and then map again. Moreover,
-//    it is impossible in any way if a memory-mapped file is used more than
-//    one process.
-//  - Windows does not provide the usual API to augment a memory-mapped file
-//    (that is, a memory-mapped partition), but only by using "Native API"
-//    in an undocumented way.
+//   - Windows unable shrinking a memory-mapped file (i.e memory-mapped section)
+//     in any way except unmapping file entirely and then map again. Moreover,
+//     it is impossible in any way if a memory-mapped file is used more than
+//     one process.
+//   - Windows does not provide the usual API to augment a memory-mapped file
+//     (that is, a memory-mapped partition), but only by using "Native API"
+//     in an undocumented way.
 //
 // MDBX bypasses all Windows issues, but at a cost:
-//  - Ability to resize database on the fly requires an additional lock
-//    and release `SlimReadWriteLock during` each read-only transaction.
-//  - During resize all in-process threads should be paused and then resumed.
-//  - Shrinking of database file is performed only when it used by single
-//    process, i.e. when a database closes by the last process or opened
-//    by the first.
-//  = Therefore, the size_now argument may be useful to set database size
-//    by the first process which open a database, and thus avoid expensive
-//    remapping further.
+//   - Ability to resize database on the fly requires an additional lock
+//     and release `SlimReadWriteLock during` each read-only transaction.
+//   - During resize all in-process threads should be paused and then resumed.
+//   - Shrinking of database file is performed only when it used by single
+//     process, i.e. when a database closes by the last process or opened
+//     by the first.
+//     = Therefore, the size_now argument may be useful to set database size
+//     by the first process which open a database, and thus avoid expensive
+//     remapping further.
 //
 // For create a new database with particular parameters, including the page
 // size, \ref mdbx_env_set_geometry() should be called after
@@ -2554,65 +2601,81 @@ type Geometry struct {
 // parameters.
 //
 // \param [in] env         An environment handle returned
-//                         by \ref mdbx_env_create()
+//
+//	by \ref mdbx_env_create()
 //
 // \param [in] size_lower  The lower bound of database size in bytes.
-//                         Zero value means "minimal acceptable",
-//                         and negative means "keep current or use default".
+//
+//	Zero value means "minimal acceptable",
+//	and negative means "keep current or use default".
 //
 // \param [in] size_now    The size in bytes to setup the database size for
-//                         now. Zero value means "minimal acceptable", and
-//                         negative means "keep current or use default". So,
-//                         it is recommended always pass -1 in this argument
-//                         except some special cases.
+//
+//	now. Zero value means "minimal acceptable", and
+//	negative means "keep current or use default". So,
+//	it is recommended always pass -1 in this argument
+//	except some special cases.
 //
 // \param [in] size_upper The upper bound of database size in bytes.
-//                        Zero value means "minimal acceptable",
-//                        and negative means "keep current or use default".
-//                        It is recommended to avoid change upper bound while
-//                        database is used by other processes or threaded
-//                        (i.e. just pass -1 in this argument except absolutely
-//                        necessary). Otherwise you must be ready for
-//                        \ref MDBX_UNABLE_EXTEND_MAPSIZE error(s), unexpected
-//                        pauses during remapping and/or system errors like
-//                        "address busy", and so on. In other words, there
-//                        is no way to handle a growth of the upper bound
-//                        robustly because there may be a lack of appropriate
-//                        system resources (which are extremely volatile in
-//                        a multi-process multi-threaded environment).
+//
+//	Zero value means "minimal acceptable",
+//	and negative means "keep current or use default".
+//	It is recommended to avoid change upper bound while
+//	database is used by other processes or threaded
+//	(i.e. just pass -1 in this argument except absolutely
+//	necessary). Otherwise you must be ready for
+//	\ref MDBX_UNABLE_EXTEND_MAPSIZE error(s), unexpected
+//	pauses during remapping and/or system errors like
+//	"address busy", and so on. In other words, there
+//	is no way to handle a growth of the upper bound
+//	robustly because there may be a lack of appropriate
+//	system resources (which are extremely volatile in
+//	a multi-process multi-threaded environment).
 //
 // \param [in] growth_step  The growth step in bytes, must be greater than
-//                          zero to allow the database to grow. Negative value
-//                          means "keep current or use default".
+//
+//	zero to allow the database to grow. Negative value
+//	means "keep current or use default".
 //
 // \param [in] shrink_threshold  The shrink threshold in bytes, must be greater
-//                               than zero to allow the database to shrink and
-//                               greater than growth_step to avoid shrinking
-//                               right after grow.
-//                               Negative value means "keep current
-//                               or use default". Default is 2*growth_step.
+//
+//	than zero to allow the database to shrink and
+//	greater than growth_step to avoid shrinking
+//	right after grow.
+//	Negative value means "keep current
+//	or use default". Default is 2*growth_step.
 //
 // \param [in] pagesize          The database page size for new database
-//                               creation or -1 otherwise. Must be power of 2
-//                               in the range between \ref MDBX_MIN_PAGESIZE and
-//                               \ref MDBX_MAX_PAGESIZE. Zero value means
-//                               "minimal acceptable", and negative means
-//                               "keep current or use default".
+//
+//	creation or -1 otherwise. Must be power of 2
+//	in the range between \ref MDBX_MIN_PAGESIZE and
+//	\ref MDBX_MAX_PAGESIZE. Zero value means
+//	"minimal acceptable", and negative means
+//	"keep current or use default".
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_EINVAL    An invalid parameter was specified,
-//                        or the environment has an active write transaction.
+//
+//	or the environment has an active write transaction.
+//
 // \retval MDBX_EPERM     Specific for Windows: Shrinking was disabled before
-//                        and now it wanna be enabled, but there are reading
-//                        threads that don't use the additional `SRWL` (that
-//                        is required to avoid Windows issues).
+//
+//	and now it wanna be enabled, but there are reading
+//	threads that don't use the additional `SRWL` (that
+//	is required to avoid Windows issues).
+//
 // \retval MDBX_EACCESS   The environment opened in read-only.
 // \retval MDBX_MAP_FULL  Specified size smaller than the space already
-//                        consumed by the environment.
+//
+//	consumed by the environment.
+//
 // \retval MDBX_TOO_LARGE Specified size is too large, i.e. too many pages for
-//                        given size, or a 32-bit process requests too much
-//                        bytes for the 32-bit address space.
+//
+//	given size, or a 32-bit process requests too much
+//	bytes for the 32-bit address space.
 func (env *Env) SetGeometry(args Geometry) Error {
 	args.env = uintptr(unsafe.Pointer(env.env))
 	ptr := uintptr(unsafe.Pointer(&args))
@@ -2732,22 +2795,27 @@ type EnvInfo struct {
 //
 // \param [in] env      An environment handle returned by \ref mdbx_env_create()
 // \param [in] force    If non-zero, force a flush. Otherwise, If force is
-//                      zero, then will run in polling mode,
-//                      i.e. it will check the thresholds that were
-//                      set \ref mdbx_env_set_syncbytes()
-//                      and/or \ref mdbx_env_set_syncperiod() and perform flush
-//                      if at least one of the thresholds is reached.
+//
+//	zero, then will run in polling mode,
+//	i.e. it will check the thresholds that were
+//	set \ref mdbx_env_set_syncbytes()
+//	and/or \ref mdbx_env_set_syncperiod() and perform flush
+//	if at least one of the thresholds is reached.
 //
 // \param [in] nonblock Don't wait if write transaction
-//                      is running by other thread.
+//
+//	is running by other thread.
 //
 // \returns A non-zero error value on failure and \ref MDBX_RESULT_TRUE or 0 on
-//     success. The \ref MDBX_RESULT_TRUE means no data pending for flush
-//     to disk, and 0 otherwise. Some possible errors are:
+//
+//	success. The \ref MDBX_RESULT_TRUE means no data pending for flush
+//	to disk, and 0 otherwise. Some possible errors are:
 //
 // \retval MDBX_EACCES   the environment is read-only.
 // \retval MDBX_BUSY     the environment is used by other thread
-//                       and `nonblock=true`.
+//
+//	and `nonblock=true`.
+//
 // \retval MDBX_EINVAL   an invalid parameter was specified.
 // \retval MDBX_EIO      an error occurred during synchronization.
 func (env *Env) Sync(force, nonblock bool) Error {
@@ -3501,12 +3569,15 @@ type TxInfo struct {
 //
 // \param [in] txn        A transaction handle returned by \ref mdbx_txn_begin()
 // \param [out] info      The address of an \ref MDBX_txn_info structure
-//                        where the information will be copied.
+//
+//	where the information will be copied.
+//
 // \param [in] scan_rlt   The boolean flag controls the scan of the read lock
-//                        table to provide complete information. Such scan
-//                        is relatively expensive and you can avoid it
-//                        if corresponding fields are not needed.
-//                        See description of \ref MDBX_txn_info.
+//
+//	table to provide complete information. Such scan
+//	is relatively expensive and you can avoid it
+//	if corresponding fields are not needed.
+//	See description of \ref MDBX_txn_info.
 //
 // \returns A non-zero error value on failure and 0 on success.
 func (tx *Tx) Info(info *TxInfo) Error {
@@ -3532,7 +3603,8 @@ func (tx *Tx) Info(info *TxInfo) Error {
 // \param [in] txn  A transaction handle returned by \ref mdbx_txn_begin().
 //
 // \returns A transaction flags, valid if input is an valid transaction,
-//          otherwise -1.
+//
+//	otherwise -1.
 func (tx *Tx) Flags() int32 {
 	args := struct {
 		txn   uintptr
@@ -3555,7 +3627,8 @@ func (tx *Tx) Flags() int32 {
 // \param [in] txn  A transaction handle returned by \ref mdbx_txn_begin().
 //
 // \returns A transaction ID, valid if input is an active transaction,
-//          otherwise 0.
+//
+//	otherwise 0.
 func (tx *Tx) ID() uint64 {
 	args := struct {
 		txn uintptr
@@ -3617,29 +3690,39 @@ func (tx *Tx) CommitEx(latency *CommitLatency) Error {
 //
 // Thus, a result other than \ref MDBX_THREAD_MISMATCH means that the
 // transaction is terminated:
-//  - Resources are released;
-//  - Transaction handle is invalid;
-//  - Cursor(s) associated with transaction must not be used, except with
-//    mdbx_cursor_renew() and \ref mdbx_cursor_close().
-//    Such cursor(s) must be closed explicitly by \ref mdbx_cursor_close()
-//    before or after transaction commit, either can be reused with
-//    \ref mdbx_cursor_renew() until it will be explicitly closed by
-//    \ref mdbx_cursor_close().
+//   - Resources are released;
+//   - Transaction handle is invalid;
+//   - Cursor(s) associated with transaction must not be used, except with
+//     mdbx_cursor_renew() and \ref mdbx_cursor_close().
+//     Such cursor(s) must be closed explicitly by \ref mdbx_cursor_close()
+//     before or after transaction commit, either can be reused with
+//     \ref mdbx_cursor_renew() until it will be explicitly closed by
+//     \ref mdbx_cursor_close().
 //
 // \param [in] txn  A transaction handle returned by \ref mdbx_txn_begin().
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_RESULT_TRUE      Transaction was aborted since it should
-//                               be aborted due to previous errors.
+//
+//	be aborted due to previous errors.
+//
 // \retval MDBX_PANIC            A fatal error occurred earlier
-//                               and the environment must be shut down.
+//
+//	and the environment must be shut down.
+//
 // \retval MDBX_BAD_TXN          Transaction is already finished or never began.
 // \retval MDBX_EBADSIGN         Transaction object has invalid signature,
-//                               e.g. transaction was already terminated
-//                               or memory was corrupted.
+//
+//	e.g. transaction was already terminated
+//	or memory was corrupted.
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_EINVAL           Transaction handle is NULL.
 // \retval MDBX_ENOSPC           No more disk space.
 // \retval MDBX_EIO              A system-level I/O error occurred.
@@ -3660,27 +3743,35 @@ func (tx *Tx) Commit() Error {
 // the \ref MDBX_THREAD_MISMATCH error will returned. Otherwise the transaction
 // will be aborted and its handle is freed. Thus, a result other than
 // \ref MDBX_THREAD_MISMATCH means that the transaction is terminated:
-//  - Resources are released;
-//  - Transaction handle is invalid;
-//  - Cursor(s) associated with transaction must not be used, except with
-//    \ref mdbx_cursor_renew() and \ref mdbx_cursor_close().
-//    Such cursor(s) must be closed explicitly by \ref mdbx_cursor_close()
-//    before or after transaction abort, either can be reused with
-//    \ref mdbx_cursor_renew() until it will be explicitly closed by
-//    \ref mdbx_cursor_close().
+//   - Resources are released;
+//   - Transaction handle is invalid;
+//   - Cursor(s) associated with transaction must not be used, except with
+//     \ref mdbx_cursor_renew() and \ref mdbx_cursor_close().
+//     Such cursor(s) must be closed explicitly by \ref mdbx_cursor_close()
+//     before or after transaction abort, either can be reused with
+//     \ref mdbx_cursor_renew() until it will be explicitly closed by
+//     \ref mdbx_cursor_close().
 //
 // \param [in] txn  A transaction handle returned by \ref mdbx_txn_begin().
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_PANIC            A fatal error occurred earlier and
-//                               the environment must be shut down.
+//
+//	the environment must be shut down.
+//
 // \retval MDBX_BAD_TXN          Transaction is already finished or never began.
 // \retval MDBX_EBADSIGN         Transaction object has invalid signature,
-//                               e.g. transaction was already terminated
-//                               or memory was corrupted.
+//
+//	e.g. transaction was already terminated
+//	or memory was corrupted.
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_EINVAL           Transaction handle is NULL.
 func (tx *Tx) Abort() Error {
 	args := struct {
@@ -3740,15 +3831,23 @@ func (tx *Tx) Break() Error {
 // \param [in] txn  A transaction handle returned by \ref mdbx_txn_begin().
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_PANIC            A fatal error occurred earlier and
-//                               the environment must be shut down.
+//
+//	the environment must be shut down.
+//
 // \retval MDBX_BAD_TXN          Transaction is already finished or never began.
 // \retval MDBX_EBADSIGN         Transaction object has invalid signature,
-//                               e.g. transaction was already terminated
-//                               or memory was corrupted.
+//
+//	e.g. transaction was already terminated
+//	or memory was corrupted.
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_EINVAL           Transaction handle is NULL.
 func (tx *Tx) Reset() Error {
 	args := struct {
@@ -3773,15 +3872,23 @@ func (tx *Tx) Reset() Error {
 // \param [in] txn  A transaction handle returned by \ref mdbx_txn_begin().
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_PANIC            A fatal error occurred earlier and
-//                               the environment must be shut down.
+//
+//	the environment must be shut down.
+//
 // \retval MDBX_BAD_TXN          Transaction is already finished or never began.
 // \retval MDBX_EBADSIGN         Transaction object has invalid signature,
-//                               e.g. transaction was already terminated
-//                               or memory was corrupted.
+//
+//	e.g. transaction was already terminated
+//	or memory was corrupted.
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_EINVAL           Transaction handle is NULL.
 func (tx *Tx) Renew() Error {
 	args := struct {
@@ -3806,16 +3913,17 @@ type Canary struct {
 //
 // \param [in] txn     A transaction handle returned by \ref mdbx_txn_begin()
 // \param [in] canary  A optional pointer to \ref MDBX_canary structure for `x`,
-//              `y` and `z` values from.
-//            - If canary is NOT NULL then the `x`, `y` and `z` values will be
-//              updated from given canary argument, but the 'v' be always set
-//              to the current transaction number if at least one `x`, `y` or
-//              `z` values have changed (i.e. if `x`, `y` and `z` have the same
-//              values as currently present then nothing will be changes or
-//              updated).
-//            - if canary is NULL then the `v` value will be explicitly update
-//              to the current transaction number without changes `x`, `y` nor
-//              `z`.
+//
+//	  `y` and `z` values from.
+//	- If canary is NOT NULL then the `x`, `y` and `z` values will be
+//	  updated from given canary argument, but the 'v' be always set
+//	  to the current transaction number if at least one `x`, `y` or
+//	  `z` values have changed (i.e. if `x`, `y` and `z` have the same
+//	  values as currently present then nothing will be changes or
+//	  updated).
+//	- if canary is NULL then the `v` value will be explicitly update
+//	  to the current transaction number without changes `x`, `y` nor
+//	  `z`.
 //
 // \returns A non-zero error value on failure and 0 on success.
 func (tx *Tx) PutCanary(canary *Canary) Error {
@@ -3839,7 +3947,8 @@ func (tx *Tx) PutCanary(canary *Canary) Error {
 //
 // \param [in] txn     A transaction handle returned by \ref mdbx_txn_begin().
 // \param [in] canary  The address of an MDBX_canary structure where the
-//                     information will be copied.
+//
+//	information will be copied.
 //
 // \returns A non-zero error value on failure and 0 on success.
 func (tx *Tx) GetCanary(canary *Canary) Error {
@@ -3871,7 +3980,9 @@ func (tx *Tx) GetCanary(canary *Canary) Error {
 // \param [in] env     An environment handle returned by \ref mdbx_env_create()
 // \param [in] txn     A transaction handle returned by \ref mdbx_txn_begin()
 // \param [out] info   The address of an \ref MDBX_envinfo structure
-//                     where the information will be copied
+//
+//	where the information will be copied
+//
 // \param [in] bytes   The size of \ref MDBX_envinfo.
 //
 // \returns A non-zero error value on failure and 0 on success.
@@ -3927,62 +4038,75 @@ func (tx *Tx) EnvInfo(info *EnvInfo) Error {
 //
 // \param [in] txn    transaction handle returned by \ref mdbx_txn_begin().
 // \param [in] name   The name of the database to open. If only a single
-//                    database is needed in the environment,
-//                    this value may be NULL.
+//
+//	database is needed in the environment,
+//	this value may be NULL.
+//
 // \param [in] flags  Special options for this database. This parameter must
-//                    be set to 0 or by bitwise OR'ing together one or more
-//                    of the values described here:
-//  - \ref MDBX_REVERSEKEY
-//      Keys are strings to be compared in reverse order, from the end
-//      of the strings to the beginning. By default, Keys are treated as
-//      strings and compared from beginning to end.
-//  - \ref MDBX_INTEGERKEY
-//      Keys are binary integers in native byte order, either uint32_t or
-//      uint64_t, and will be sorted as such. The keys must all be of the
-//      same size and must be aligned while passing as arguments.
-//  - \ref MDBX_DUPSORT
-//      Duplicate keys may be used in the database. Or, from another point of
-//      view, keys may have multiple data items, stored in sorted order. By
-//      default keys must be unique and may have only a single data item.
-//  - \ref MDBX_DUPFIXED
-//      This flag may only be used in combination with \ref MDBX_DUPSORT. This
-//      option tells the library that the data items for this database are
-//      all the same size, which allows further optimizations in storage and
-//      retrieval. When all data items are the same size, the
-//      \ref MDBX_GET_MULTIPLE, \ref MDBX_NEXT_MULTIPLE and
-//      \ref MDBX_PREV_MULTIPLE cursor operations may be used to retrieve
-//      multiple items at once.
-//  - \ref MDBX_INTEGERDUP
-//      This option specifies that duplicate data items are binary integers,
-//      similar to \ref MDBX_INTEGERKEY keys. The data values must all be of the
-//      same size and must be aligned while passing as arguments.
-//  - \ref MDBX_REVERSEDUP
-//      This option specifies that duplicate data items should be compared as
-//      strings in reverse order (the comparison is performed in the direction
-//      from the last byte to the first).
-//  - \ref MDBX_CREATE
-//      Create the named database if it doesn't exist. This option is not
-//      allowed in a read-only transaction or a read-only environment.
+//
+//	                  be set to 0 or by bitwise OR'ing together one or more
+//	                  of the values described here:
+//	- \ref MDBX_REVERSEKEY
+//	    Keys are strings to be compared in reverse order, from the end
+//	    of the strings to the beginning. By default, Keys are treated as
+//	    strings and compared from beginning to end.
+//	- \ref MDBX_INTEGERKEY
+//	    Keys are binary integers in native byte order, either uint32_t or
+//	    uint64_t, and will be sorted as such. The keys must all be of the
+//	    same size and must be aligned while passing as arguments.
+//	- \ref MDBX_DUPSORT
+//	    Duplicate keys may be used in the database. Or, from another point of
+//	    view, keys may have multiple data items, stored in sorted order. By
+//	    default keys must be unique and may have only a single data item.
+//	- \ref MDBX_DUPFIXED
+//	    This flag may only be used in combination with \ref MDBX_DUPSORT. This
+//	    option tells the library that the data items for this database are
+//	    all the same size, which allows further optimizations in storage and
+//	    retrieval. When all data items are the same size, the
+//	    \ref MDBX_GET_MULTIPLE, \ref MDBX_NEXT_MULTIPLE and
+//	    \ref MDBX_PREV_MULTIPLE cursor operations may be used to retrieve
+//	    multiple items at once.
+//	- \ref MDBX_INTEGERDUP
+//	    This option specifies that duplicate data items are binary integers,
+//	    similar to \ref MDBX_INTEGERKEY keys. The data values must all be of the
+//	    same size and must be aligned while passing as arguments.
+//	- \ref MDBX_REVERSEDUP
+//	    This option specifies that duplicate data items should be compared as
+//	    strings in reverse order (the comparison is performed in the direction
+//	    from the last byte to the first).
+//	- \ref MDBX_CREATE
+//	    Create the named database if it doesn't exist. This option is not
+//	    allowed in a read-only transaction or a read-only environment.
 //
 // \param [out] dbi     Address where the new \ref MDBX_dbi handle
-//                      will be stored.
+//
+//	will be stored.
 //
 // For \ref mdbx_dbi_open_ex() additional arguments allow you to set custom
 // comparison functions for keys and values (for multimaps).
 // \see avoid_custom_comparators
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_NOTFOUND   The specified database doesn't exist in the
-//                         environment and \ref MDBX_CREATE was not specified.
+//
+//	environment and \ref MDBX_CREATE was not specified.
+//
 // \retval MDBX_DBS_FULL   Too many databases have been opened.
-//                         \see mdbx_env_set_maxdbs()
+//
+//	\see mdbx_env_set_maxdbs()
+//
 // \retval MDBX_INCOMPATIBLE  Database is incompatible with given flags,
-//                         i.e. the passed flags is different with which the
-//                         database was created, or the database was already
-//                         opened with a different comparison function(s).
+//
+//	i.e. the passed flags is different with which the
+//	database was created, or the database was already
+//	opened with a different comparison function(s).
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
 func (tx *Tx) OpenDBI(name string, flags DBFlags) (DBI, Error) {
 	if len(name) == 0 {
 		var dbi DBI
@@ -3997,36 +4121,36 @@ func (tx *Tx) OpenDBI(name string, flags DBFlags) (DBI, Error) {
 	}
 }
 
-// OpenDBIEx OpenDBI with custom comparators.
-// \ref avoid_custom_comparators "avoid using custom comparators" and use
-// \ref mdbx_dbi_open() instead.
-//
-// \ingroup c_dbi
-//
-// \param [in] txn    transaction handle returned by \ref mdbx_txn_begin().
-// \param [in] name   The name of the database to open. If only a single
-//                    database is needed in the environment,
-//                    this value may be NULL.
-// \param [in] flags  Special options for this database.
-// \param [in] keycmp  Optional custom key comparison function for a database.
-// \param [in] datacmp Optional custom data comparison function for a database.
-// \param [out] dbi    Address where the new MDBX_dbi handle will be stored.
-// \returns A non-zero error value on failure and 0 on success.
-func (tx *Tx) OpenDBIEx(name string, flags DBFlags, keyCompare, dataCompare *Cmp) (DBI, Error) {
-	if len(name) == 0 {
-		var dbi DBI
-		err := Error(C.mdbx_dbi_open_ex(tx.txn, nil, (C.MDBX_db_flags_t)(flags), (*C.MDBX_dbi)(unsafe.Pointer(&dbi)),
-			(*C.MDBX_cmp_func)(unsafe.Pointer(keyCompare)), (*C.MDBX_cmp_func)(unsafe.Pointer(dataCompare))))
-		return dbi, err
-	} else {
-		n := C.CString(name)
-		defer C.free(unsafe.Pointer(n))
-		var dbi DBI
-		err := Error(C.mdbx_dbi_open_ex(tx.txn, n, (C.MDBX_db_flags_t)(flags), (*C.MDBX_dbi)(unsafe.Pointer(&dbi)),
-			(*C.MDBX_cmp_func)(unsafe.Pointer(keyCompare)), (*C.MDBX_cmp_func)(unsafe.Pointer(dataCompare))))
-		return dbi, err
-	}
-}
+//// OpenDBIEx OpenDBI with custom comparators.
+//// \ref avoid_custom_comparators "avoid using custom comparators" and use
+//// \ref mdbx_dbi_open() instead.
+////
+//// \ingroup c_dbi
+////
+//// \param [in] txn    transaction handle returned by \ref mdbx_txn_begin().
+//// \param [in] name   The name of the database to open. If only a single
+////                    database is needed in the environment,
+////                    this value may be NULL.
+//// \param [in] flags  Special options for this database.
+//// \param [in] keycmp  Optional custom key comparison function for a database.
+//// \param [in] datacmp Optional custom data comparison function for a database.
+//// \param [out] dbi    Address where the new MDBX_dbi handle will be stored.
+//// \returns A non-zero error value on failure and 0 on success.
+//func (tx *Tx) OpenDBIEx(name string, flags DBFlags, keyCompare, dataCompare *Cmp) (DBI, Error) {
+//	if len(name) == 0 {
+//		var dbi DBI
+//		err := Error(C.mdbx_dbi_open_ex(tx.txn, nil, (C.MDBX_db_flags_t)(flags), (*C.MDBX_dbi)(unsafe.Pointer(&dbi)),
+//			(*C.MDBX_cmp_func)(unsafe.Pointer(keyCompare)), (*C.MDBX_cmp_func)(unsafe.Pointer(dataCompare))))
+//		return dbi, err
+//	} else {
+//		n := C.CString(name)
+//		defer C.free(unsafe.Pointer(n))
+//		var dbi DBI
+//		err := Error(C.mdbx_dbi_open_ex(tx.txn, n, (C.MDBX_db_flags_t)(flags), (*C.MDBX_dbi)(unsafe.Pointer(&dbi)),
+//			(*C.MDBX_cmp_func)(unsafe.Pointer(keyCompare)), (*C.MDBX_cmp_func)(unsafe.Pointer(dataCompare))))
+//		return dbi, err
+//	}
+//}
 
 // Stats Statistics for a database in the environment
 // \ingroup c_statinfo
@@ -4047,13 +4171,19 @@ type Stats struct {
 // \param [in] txn     A transaction handle returned by \ref mdbx_txn_begin().
 // \param [in] dbi     A database handle returned by \ref mdbx_dbi_open().
 // \param [out] stat   The address of an \ref MDBX_stat structure where
-//                     the statistics will be copied.
+//
+//	the statistics will be copied.
+//
 // \param [in] bytes   The size of \ref MDBX_stat.
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_EINVAL   An invalid parameter was specified.
 func (tx *Tx) DBIStat(dbi DBI, stat *Stats) Error {
 	args := struct {
@@ -4111,7 +4241,8 @@ func (tx *Tx) DBIFlags(dbi DBI) (DBFlags, DBIState, Error) {
 // \param [in] txn  A transaction handle returned by \ref mdbx_txn_begin().
 // \param [in] dbi  A database handle returned by \ref mdbx_dbi_open().
 // \param [in] del  `false` to empty the DB, `true` to delete it
-//                  from the environment and close the DB handle.
+//
+//	from the environment and close the DB handle.
 //
 // \returns A non-zero error value on failure and 0 on success.
 func (tx *Tx) Drop(dbi DBI, del bool) Error {
@@ -4156,9 +4287,13 @@ func (tx *Tx) Drop(dbi DBI, del bool) Error {
 // \param [in,out] data  The data corresponding to the key.
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_NOTFOUND  The key was not in the database.
 // \retval MDBX_EINVAL    An invalid parameter was specified.
 func (tx *Tx) Get(dbi DBI, key *Val, data *Val) Error {
@@ -4184,27 +4319,33 @@ func (tx *Tx) Get(dbi DBI, key *Val, data *Val) Error {
 //
 // Briefly this function does the same as \ref mdbx_get() with a few
 // differences:
-// 1. Return equal or great (due comparison function) key-value
-//    pair, but not only exactly matching with the key.
-// 2. On success return \ref MDBX_SUCCESS if key found exactly,
-//    and \ref MDBX_RESULT_TRUE otherwise. Moreover, for databases with
-//    \ref MDBX_DUPSORT flag the data argument also will be used to match over
-//    multi-value/duplicates, and \ref MDBX_SUCCESS will be returned only when
-//    BOTH the key and the data match exactly.
-// 3. Updates BOTH the key and the data for pointing to the actual key-value
-//    pair inside the database.
+//  1. Return equal or great (due comparison function) key-value
+//     pair, but not only exactly matching with the key.
+//  2. On success return \ref MDBX_SUCCESS if key found exactly,
+//     and \ref MDBX_RESULT_TRUE otherwise. Moreover, for databases with
+//     \ref MDBX_DUPSORT flag the data argument also will be used to match over
+//     multi-value/duplicates, and \ref MDBX_SUCCESS will be returned only when
+//     BOTH the key and the data match exactly.
+//  3. Updates BOTH the key and the data for pointing to the actual key-value
+//     pair inside the database.
 //
 // \param [in] txn           A transaction handle returned
-//                           by \ref mdbx_txn_begin().
+//
+//	by \ref mdbx_txn_begin().
+//
 // \param [in] dbi           A database handle returned by \ref mdbx_dbi_open().
 // \param [in,out] key       The key to search for in the database.
 // \param [in,out] data      The data corresponding to the key.
 //
 // \returns A non-zero error value on failure and \ref MDBX_RESULT_FALSE
-//          or \ref MDBX_RESULT_TRUE on success (as described above).
-//          Some possible errors are:
+//
+//	or \ref MDBX_RESULT_TRUE on success (as described above).
+//	Some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_NOTFOUND      The key was not in the database.
 // \retval MDBX_EINVAL        An invalid parameter was specified.
 func (tx *Tx) GetEqualOrGreat(dbi DBI, key *Val, data *Val) Error {
@@ -4238,21 +4379,28 @@ func (tx *Tx) GetEqualOrGreat(dbi DBI, key *Val, data *Val) Error {
 //     pair inside the database.
 //
 // \param [in] txn           A transaction handle returned
-//                           by \ref mdbx_txn_begin().
+//
+//	by \ref mdbx_txn_begin().
+//
 // \param [in] dbi           A database handle returned by \ref mdbx_dbi_open().
 // \param [in,out] key       The key to search for in the database.
 // \param [in,out] data      The data corresponding to the key.
 // \param [out] values_count The optional address to return number of values
-//                           associated with given key:
-//                            = 0 - in case \ref MDBX_NOTFOUND error;
-//                            = 1 - exactly for databases
-//                                  WITHOUT \ref MDBX_DUPSORT;
-//                            >= 1 for databases WITH \ref MDBX_DUPSORT.
+//
+//	associated with given key:
+//	 = 0 - in case \ref MDBX_NOTFOUND error;
+//	 = 1 - exactly for databases
+//	       WITHOUT \ref MDBX_DUPSORT;
+//	 >= 1 for databases WITH \ref MDBX_DUPSORT.
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_NOTFOUND  The key was not in the database.
 // \retval MDBX_EINVAL    An invalid parameter was specified.
 func (tx *Tx) GetEx(dbi DBI, key *Val, data *Val) (int, Error) {
@@ -4285,77 +4433,86 @@ func (tx *Tx) GetEx(dbi DBI, key *Val, data *Val) (int, Error) {
 // duplicates are allowed (see \ref MDBX_DUPSORT).
 //
 // \param [in] txn        A transaction handle returned
-//                        by \ref mdbx_txn_begin().
+//
+//	by \ref mdbx_txn_begin().
+//
 // \param [in] dbi        A database handle returned by \ref mdbx_dbi_open().
 // \param [in] key        The key to store in the database.
 // \param [in,out] data   The data to store.
 // \param [in] flags      Special options for this operation.
-//                        This parameter must be set to 0 or by bitwise OR'ing
-//                        together one or more of the values described here:
-//   - \ref MDBX_NODUPDATA
-//      Enter the new key-value pair only if it does not already appear
-//      in the database. This flag may only be specified if the database
-//      was opened with \ref MDBX_DUPSORT. The function will return
-//      \ref MDBX_KEYEXIST if the key/data pair already appears in the database.
 //
-//  - \ref MDBX_NOOVERWRITE
-//      Enter the new key/data pair only if the key does not already appear
-//      in the database. The function will return \ref MDBX_KEYEXIST if the key
-//      already appears in the database, even if the database supports
-//      duplicates (see \ref  MDBX_DUPSORT). The data parameter will be set
-//      to point to the existing item.
+//	                      This parameter must be set to 0 or by bitwise OR'ing
+//	                      together one or more of the values described here:
+//	 - \ref MDBX_NODUPDATA
+//	    Enter the new key-value pair only if it does not already appear
+//	    in the database. This flag may only be specified if the database
+//	    was opened with \ref MDBX_DUPSORT. The function will return
+//	    \ref MDBX_KEYEXIST if the key/data pair already appears in the database.
 //
-//  - \ref MDBX_CURRENT
-//      Update an single existing entry, but not add new ones. The function will
-//      return \ref MDBX_NOTFOUND if the given key not exist in the database.
-//      In case multi-values for the given key, with combination of
-//      the \ref MDBX_ALLDUPS will replace all multi-values,
-//      otherwise return the \ref MDBX_EMULTIVAL.
+//	- \ref MDBX_NOOVERWRITE
+//	    Enter the new key/data pair only if the key does not already appear
+//	    in the database. The function will return \ref MDBX_KEYEXIST if the key
+//	    already appears in the database, even if the database supports
+//	    duplicates (see \ref  MDBX_DUPSORT). The data parameter will be set
+//	    to point to the existing item.
 //
-//  - \ref MDBX_RESERVE
-//      Reserve space for data of the given size, but don't copy the given
-//      data. Instead, return a pointer to the reserved space, which the
-//      caller can fill in later - before the next update operation or the
-//      transaction ends. This saves an extra memcpy if the data is being
-//      generated later. MDBX does nothing else with this memory, the caller
-//      is expected to modify all of the space requested. This flag must not
-//      be specified if the database was opened with \ref MDBX_DUPSORT.
+//	- \ref MDBX_CURRENT
+//	    Update an single existing entry, but not add new ones. The function will
+//	    return \ref MDBX_NOTFOUND if the given key not exist in the database.
+//	    In case multi-values for the given key, with combination of
+//	    the \ref MDBX_ALLDUPS will replace all multi-values,
+//	    otherwise return the \ref MDBX_EMULTIVAL.
 //
-//  - \ref MDBX_APPEND
-//      Append the given key/data pair to the end of the database. This option
-//      allows fast bulk loading when keys are already known to be in the
-//      correct order. Loading unsorted keys with this flag will cause
-//      a \ref MDBX_EKEYMISMATCH error.
+//	- \ref MDBX_RESERVE
+//	    Reserve space for data of the given size, but don't copy the given
+//	    data. Instead, return a pointer to the reserved space, which the
+//	    caller can fill in later - before the next update operation or the
+//	    transaction ends. This saves an extra memcpy if the data is being
+//	    generated later. MDBX does nothing else with this memory, the caller
+//	    is expected to modify all of the space requested. This flag must not
+//	    be specified if the database was opened with \ref MDBX_DUPSORT.
 //
-//  - \ref MDBX_APPENDDUP
-//      As above, but for sorted dup data.
+//	- \ref MDBX_APPEND
+//	    Append the given key/data pair to the end of the database. This option
+//	    allows fast bulk loading when keys are already known to be in the
+//	    correct order. Loading unsorted keys with this flag will cause
+//	    a \ref MDBX_EKEYMISMATCH error.
 //
-//  - \ref MDBX_MULTIPLE
-//      Store multiple contiguous data elements in a single request. This flag
-//      may only be specified if the database was opened with
-//      \ref MDBX_DUPFIXED. With combination the \ref MDBX_ALLDUPS
-//      will replace all multi-values.
-//      The data argument must be an array of two \ref MDBX_val. The `iov_len`
-//      of the first \ref MDBX_val must be the size of a single data element.
-//      The `iov_base` of the first \ref MDBX_val must point to the beginning
-//      of the array of contiguous data elements which must be properly aligned
-//      in case of database with \ref MDBX_INTEGERDUP flag.
-//      The `iov_len` of the second \ref MDBX_val must be the count of the
-//      number of data elements to store. On return this field will be set to
-//      the count of the number of elements actually written. The `iov_base` of
-//      the second \ref MDBX_val is unused.
+//	- \ref MDBX_APPENDDUP
+//	    As above, but for sorted dup data.
+//
+//	- \ref MDBX_MULTIPLE
+//	    Store multiple contiguous data elements in a single request. This flag
+//	    may only be specified if the database was opened with
+//	    \ref MDBX_DUPFIXED. With combination the \ref MDBX_ALLDUPS
+//	    will replace all multi-values.
+//	    The data argument must be an array of two \ref MDBX_val. The `iov_len`
+//	    of the first \ref MDBX_val must be the size of a single data element.
+//	    The `iov_base` of the first \ref MDBX_val must point to the beginning
+//	    of the array of contiguous data elements which must be properly aligned
+//	    in case of database with \ref MDBX_INTEGERDUP flag.
+//	    The `iov_len` of the second \ref MDBX_val must be the count of the
+//	    number of data elements to store. On return this field will be set to
+//	    the count of the number of elements actually written. The `iov_base` of
+//	    the second \ref MDBX_val is unused.
 //
 // \see \ref c_crud_hints "Quick reference for Insert/Update/Delete operations"
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_KEYEXIST  The key/value pair already exists in the database.
 // \retval MDBX_MAP_FULL  The database is full, see \ref mdbx_env_set_mapsize().
 // \retval MDBX_TXN_FULL  The transaction has too many dirty pages.
 // \retval MDBX_EACCES    An attempt was made to write
-//                        in a read-only transaction.
+//
+//	in a read-only transaction.
+//
 // \retval MDBX_EINVAL    An invalid parameter was specified.
 func (tx *Tx) Put(dbi DBI, key *Val, data *Val, flags PutFlags) Error {
 	args := struct {
@@ -4401,21 +4558,28 @@ func (tx *Tx) Put(dbi DBI, key *Val, data *Val, flags PutFlags) Error {
 // such a scenario.
 //
 // \param [in] txn           A transaction handle returned
-//                           by \ref mdbx_txn_begin().
+//
+//	by \ref mdbx_txn_begin().
+//
 // \param [in] dbi           A database handle returned by \ref mdbx_dbi_open().
 // \param [in] key           The key to store in the database.
 // \param [in] new_data      The data to store, if NULL then deletion will
-//                           be performed.
+//
+//	be performed.
+//
 // \param [in,out] old_data  The buffer for retrieve previous value as describe
-//                           above.
+//
+//	above.
+//
 // \param [in] flags         Special options for this operation.
-//                           This parameter must be set to 0 or by bitwise
-//                           OR'ing together one or more of the values
-//                           described in \ref mdbx_put() description above,
-//                           and additionally
-//                           (\ref MDBX_CURRENT | \ref MDBX_NOOVERWRITE)
-//                           combination for selection particular item from
-//                           multi-value/duplicates.
+//
+//	This parameter must be set to 0 or by bitwise
+//	OR'ing together one or more of the values
+//	described in \ref mdbx_put() description above,
+//	and additionally
+//	(\ref MDBX_CURRENT | \ref MDBX_NOOVERWRITE)
+//	combination for selection particular item from
+//	multi-value/duplicates.
 //
 // \see \ref c_crud_hints "Quick reference for Insert/Update/Delete operations"
 //
@@ -4463,9 +4627,13 @@ func (tx *Tx) Replace(dbi DBI, key *Val, data *Val, oldData *Val, flags PutFlags
 // \param [in] data  The data to delete.
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_EACCES   An attempt was made to write
-//                       in a read-only transaction.
+//
+//	in a read-only transaction.
+//
 // \retval MDBX_EINVAL   An invalid parameter was specified.
 func (tx *Tx) Delete(dbi DBI, key *Val, data *Val) Error {
 	args := struct {
@@ -4511,8 +4679,9 @@ type Cursor C.MDBX_cursor
 // memory corruption and segfaults.
 //
 // \param [in] context A pointer to application context to be associated with
-//                     created cursor and could be retrieved by
-//                     \ref mdbx_cursor_get_userctx() until cursor closed.
+//
+//	created cursor and could be retrieved by
+//	\ref mdbx_cursor_get_userctx() until cursor closed.
 //
 // \returns Created cursor handle or NULL in case out of memory.
 func NewCursor() *Cursor {
@@ -4547,9 +4716,13 @@ func NewCursor() *Cursor {
 // \param [out] cursor  A cursor handle returned by \ref mdbx_cursor_create().
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_EINVAL  An invalid parameter was specified.
 func (tx *Tx) Bind(cursor *Cursor, dbi DBI) Error {
 	args := struct {
@@ -4592,12 +4765,17 @@ func (tx *Tx) Bind(cursor *Cursor, dbi DBI) Error {
 // \param [in] txn      A transaction handle returned by \ref mdbx_txn_begin().
 // \param [in] dbi      A database handle returned by \ref mdbx_dbi_open().
 // \param [out] cursor  Address where the new \ref MDBX_cursor handle will be
-//                      stored.
+//
+//	stored.
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_EINVAL  An invalid parameter was specified.
 func (tx *Tx) OpenCursor(dbi DBI) (*Cursor, Error) {
 	var cursor *C.MDBX_cursor
@@ -4629,7 +4807,8 @@ func (tx *Tx) OpenCursor(dbi DBI) (*Cursor, Error) {
 // memory corruption and segfaults.
 //
 // \param [in] cursor  A cursor handle returned by \ref mdbx_cursor_open()
-//                     or \ref mdbx_cursor_create().
+//
+//	or \ref mdbx_cursor_create().
 func (cur *Cursor) Close() Error {
 	ptr := uintptr(unsafe.Pointer(cur))
 	unsafecgo.NonBlocking((*byte)(C.do_mdbx_cursor_close), ptr, 0)
@@ -4656,9 +4835,13 @@ func (cur *Cursor) Close() Error {
 // \param [in] cursor   A cursor handle returned by \ref mdbx_cursor_open().
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_EINVAL  An invalid parameter was specified.
 func (cur *Cursor) Renew(tx *Tx) Error {
 	args := struct {
@@ -4746,9 +4929,13 @@ func (cur *Cursor) Copy(dest *Cursor) Error {
 // \param [in] op        A cursor operation \ref MDBX_cursor_op.
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_NOTFOUND  No matching key found.
 // \retval MDBX_EINVAL    An invalid parameter was specified.
 func (cur *Cursor) Get(key *Val, data *Val, op CursorOp) Error {
@@ -4779,75 +4966,86 @@ func (cur *Cursor) Get(key *Val, data *Val, op CursorOp) Error {
 // \param [in] key       The key operated on.
 // \param [in,out] data  The data operated on.
 // \param [in] flags     Options for this operation. This parameter
-//                       must be set to 0 or by bitwise OR'ing together
-//                       one or more of the values described here:
-//  - \ref MDBX_CURRENT
-//      Replace the item at the current cursor position. The key parameter
-//      must still be provided, and must match it, otherwise the function
-//      return \ref MDBX_EKEYMISMATCH. With combination the
-//      \ref MDBX_ALLDUPS will replace all multi-values.
 //
-//      \note MDBX allows (unlike LMDB) you to change the size of the data and
-//      automatically handles reordering for sorted duplicates
-//      (see \ref MDBX_DUPSORT).
+//	                     must be set to 0 or by bitwise OR'ing together
+//	                     one or more of the values described here:
+//	- \ref MDBX_CURRENT
+//	    Replace the item at the current cursor position. The key parameter
+//	    must still be provided, and must match it, otherwise the function
+//	    return \ref MDBX_EKEYMISMATCH. With combination the
+//	    \ref MDBX_ALLDUPS will replace all multi-values.
 //
-//  - \ref MDBX_NODUPDATA
-//      Enter the new key-value pair only if it does not already appear in the
-//      database. This flag may only be specified if the database was opened
-//      with \ref MDBX_DUPSORT. The function will return \ref MDBX_KEYEXIST
-//      if the key/data pair already appears in the database.
+//	    \note MDBX allows (unlike LMDB) you to change the size of the data and
+//	    automatically handles reordering for sorted duplicates
+//	    (see \ref MDBX_DUPSORT).
 //
-//  - \ref MDBX_NOOVERWRITE
-//      Enter the new key/data pair only if the key does not already appear
-//      in the database. The function will return \ref MDBX_KEYEXIST if the key
-//      already appears in the database, even if the database supports
-//      duplicates (\ref MDBX_DUPSORT).
+//	- \ref MDBX_NODUPDATA
+//	    Enter the new key-value pair only if it does not already appear in the
+//	    database. This flag may only be specified if the database was opened
+//	    with \ref MDBX_DUPSORT. The function will return \ref MDBX_KEYEXIST
+//	    if the key/data pair already appears in the database.
 //
-//  - \ref MDBX_RESERVE
-//      Reserve space for data of the given size, but don't copy the given
-//      data. Instead, return a pointer to the reserved space, which the
-//      caller can fill in later - before the next update operation or the
-//      transaction ends. This saves an extra memcpy if the data is being
-//      generated later. This flag must not be specified if the database
-//      was opened with \ref MDBX_DUPSORT.
+//	- \ref MDBX_NOOVERWRITE
+//	    Enter the new key/data pair only if the key does not already appear
+//	    in the database. The function will return \ref MDBX_KEYEXIST if the key
+//	    already appears in the database, even if the database supports
+//	    duplicates (\ref MDBX_DUPSORT).
 //
-//  - \ref MDBX_APPEND
-//      Append the given key/data pair to the end of the database. No key
-//      comparisons are performed. This option allows fast bulk loading when
-//      keys are already known to be in the correct order. Loading unsorted
-//      keys with this flag will cause a \ref MDBX_KEYEXIST error.
+//	- \ref MDBX_RESERVE
+//	    Reserve space for data of the given size, but don't copy the given
+//	    data. Instead, return a pointer to the reserved space, which the
+//	    caller can fill in later - before the next update operation or the
+//	    transaction ends. This saves an extra memcpy if the data is being
+//	    generated later. This flag must not be specified if the database
+//	    was opened with \ref MDBX_DUPSORT.
 //
-//  - \ref MDBX_APPENDDUP
-//      As above, but for sorted dup data.
+//	- \ref MDBX_APPEND
+//	    Append the given key/data pair to the end of the database. No key
+//	    comparisons are performed. This option allows fast bulk loading when
+//	    keys are already known to be in the correct order. Loading unsorted
+//	    keys with this flag will cause a \ref MDBX_KEYEXIST error.
 //
-//  - \ref MDBX_MULTIPLE
-//      Store multiple contiguous data elements in a single request. This flag
-//      may only be specified if the database was opened with
-//      \ref MDBX_DUPFIXED. With combination the \ref MDBX_ALLDUPS
-//      will replace all multi-values.
-//      The data argument must be an array of two \ref MDBX_val. The `iov_len`
-//      of the first \ref MDBX_val must be the size of a single data element.
-//      The `iov_base` of the first \ref MDBX_val must point to the beginning
-//      of the array of contiguous data elements which must be properly aligned
-//      in case of database with \ref MDBX_INTEGERDUP flag.
-//      The `iov_len` of the second \ref MDBX_val must be the count of the
-//      number of data elements to store. On return this field will be set to
-//      the count of the number of elements actually written. The `iov_base` of
-//      the second \ref MDBX_val is unused.
+//	- \ref MDBX_APPENDDUP
+//	    As above, but for sorted dup data.
+//
+//	- \ref MDBX_MULTIPLE
+//	    Store multiple contiguous data elements in a single request. This flag
+//	    may only be specified if the database was opened with
+//	    \ref MDBX_DUPFIXED. With combination the \ref MDBX_ALLDUPS
+//	    will replace all multi-values.
+//	    The data argument must be an array of two \ref MDBX_val. The `iov_len`
+//	    of the first \ref MDBX_val must be the size of a single data element.
+//	    The `iov_base` of the first \ref MDBX_val must point to the beginning
+//	    of the array of contiguous data elements which must be properly aligned
+//	    in case of database with \ref MDBX_INTEGERDUP flag.
+//	    The `iov_len` of the second \ref MDBX_val must be the count of the
+//	    number of data elements to store. On return this field will be set to
+//	    the count of the number of elements actually written. The `iov_base` of
+//	    the second \ref MDBX_val is unused.
 //
 // \see \ref c_crud_hints "Quick reference for Insert/Update/Delete operations"
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_EKEYMISMATCH  The given key value is mismatched to the current
-//                            cursor position
+//
+//	cursor position
+//
 // \retval MDBX_MAP_FULL      The database is full,
-//                             see \ref mdbx_env_set_mapsize().
+//
+//	see \ref mdbx_env_set_mapsize().
+//
 // \retval MDBX_TXN_FULL      The transaction has too many dirty pages.
 // \retval MDBX_EACCES        An attempt was made to write in a read-only
-//                            transaction.
+//
+//	transaction.
+//
 // \retval MDBX_EINVAL        An invalid parameter was specified.
 func (cur *Cursor) Put(key *Val, data *Val, flags PutFlags) Error {
 	args := struct {
@@ -4879,23 +5077,31 @@ func (cur *Cursor) Put(key *Val, data *Val, flags PutFlags) Error {
 // \param [in] flags   Options for this operation. This parameter must be set
 // to one of the values described here.
 //
-//  - \ref MDBX_CURRENT Delete only single entry at current cursor position.
-//  - \ref MDBX_ALLDUPS
-//    or \ref MDBX_NODUPDATA (supported for compatibility)
-//      Delete all of the data items for the current key. This flag has effect
-//      only for database(s) was created with \ref MDBX_DUPSORT.
+//   - \ref MDBX_CURRENT Delete only single entry at current cursor position.
+//   - \ref MDBX_ALLDUPS
+//     or \ref MDBX_NODUPDATA (supported for compatibility)
+//     Delete all of the data items for the current key. This flag has effect
+//     only for database(s) was created with \ref MDBX_DUPSORT.
 //
 // \see \ref c_crud_hints "Quick reference for Insert/Update/Delete operations"
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_MAP_FULL      The database is full,
-//                            see \ref mdbx_env_set_mapsize().
+//
+//	see \ref mdbx_env_set_mapsize().
+//
 // \retval MDBX_TXN_FULL      The transaction has too many dirty pages.
 // \retval MDBX_EACCES        An attempt was made to write in a read-only
-//                            transaction.
+//
+//	transaction.
+//
 // \retval MDBX_EINVAL        An invalid parameter was specified.
 func (cur *Cursor) Delete(flags PutFlags) Error {
 	args := struct {
@@ -4921,11 +5127,16 @@ func (cur *Cursor) Delete(flags PutFlags) Error {
 // \param [out] pcount   Address where the count will be stored.
 //
 // \returns A non-zero error value on failure and 0 on success,
-//          some possible errors are:
+//
+//	some possible errors are:
+//
 // \retval MDBX_THREAD_MISMATCH  Given transaction is not owned
-//                               by current thread.
+//
+//	by current thread.
+//
 // \retval MDBX_EINVAL   Cursor is not initialized, or an invalid parameter
-//                       was specified.
+//
+//	was specified.
 func (cur *Cursor) Count() (int, Error) {
 	var count uintptr
 	args := struct {
@@ -4948,9 +5159,13 @@ func (cur *Cursor) Count() (int, Error) {
 // \param [in] cursor    A cursor handle returned by \ref mdbx_cursor_open().
 //
 // \returns A \ref MDBX_RESULT_TRUE or \ref MDBX_RESULT_FALSE value,
-//          otherwise the error code:
+//
+//	otherwise the error code:
+//
 // \retval MDBX_RESULT_TRUE    No more data available or cursor not
-//                             positioned
+//
+//	positioned
+//
 // \retval MDBX_RESULT_FALSE   A data is available
 // \retval Otherwise the error code
 func (cur *Cursor) EOF() Error {
@@ -4971,7 +5186,9 @@ func (cur *Cursor) EOF() Error {
 // \param [in] cursor    A cursor handle returned by \ref mdbx_cursor_open().
 //
 // \returns A MDBX_RESULT_TRUE or MDBX_RESULT_FALSE value,
-//          otherwise the error code:
+//
+//	otherwise the error code:
+//
 // \retval MDBX_RESULT_TRUE   Cursor positioned to the first key-value pair
 // \retval MDBX_RESULT_FALSE  Cursor NOT positioned to the first key-value
 // pair \retval Otherwise the error code
@@ -4993,7 +5210,9 @@ func (cur *Cursor) OnFirst() Error {
 // \param [in] cursor    A cursor handle returned by \ref mdbx_cursor_open().
 //
 // \returns A \ref MDBX_RESULT_TRUE or \ref MDBX_RESULT_FALSE value,
-//          otherwise the error code:
+//
+//	otherwise the error code:
+//
 // \retval MDBX_RESULT_TRUE   Cursor positioned to the last key-value pair
 // \retval MDBX_RESULT_FALSE  Cursor NOT positioned to the last key-value pair
 // \retval Otherwise the error code
@@ -5050,7 +5269,8 @@ func (cur *Cursor) OnLast() Error {
 // \param [in] first            The first cursor for estimation.
 // \param [in] last             The second cursor for estimation.
 // \param [out] distance_items  The pointer to store estimated distance value,
-//                              i.e. `*distance_items = distance(first, last)`.
+//
+//	i.e. `*distance_items = distance(first, last)`.
 //
 // \returns A non-zero error value on failure and 0 on success.
 func EstimateDistance(first, last *Cursor) (int64, Error) {
